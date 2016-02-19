@@ -21,5 +21,11 @@
         "phpspec/prophecy-phpunit": "^1.1",
         "behat/behat": "^3.0",
         "behat/gherkin": "^4.4"
+    },
+    "config": {
+        "bin-dir": "./bin"
+    },
+    "scripts": {
+        "serve": "php -S 0.0.0.0:8888 -t public"
     }
 }
