@@ -3,6 +3,7 @@
 namespace Salexandru\Api\Server;
 
 use Salexandru\Api\Server;
+use Salexandru\Bootstrap\ConfigInitializer;
 
 class Bootstrap
 {
@@ -16,6 +17,14 @@ class Bootstrap
 
     public function run()
     {
+        $this->initConfig();
+
         $this->server->run();
+    }
+
+    private function initConfig()
+    {
+        $configInitializer = new ConfigInitializer($this->server->getContainer());
+        $configInitializer->run();
     }
 }
