@@ -19,5 +19,3 @@ class Bootstrap
         $this->server->run();
     }
 }
-
-
