@@ -1,0 +1,25 @@
+{
+    "name": "slim-api-sample",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mr. Burns",
+            "email": "acid24@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "slim/slim": "^3.1",
+        "lcobucci/jwt": "^3.1",
+        "psr/log": "^1.0",
+        "zendframework/zend-config": "^2.6",
+        "guzzlehttp/guzzle": "^6.1",
+        "monolog/monolog": "^1.17",
+        "vlucas/phpdotenv": "^2.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "phpspec/prophecy-phpunit": "^1.1",
+        "behat/behat": "^3.0",
+        "behat/gherkin": "^4.4"
+    }
+}
