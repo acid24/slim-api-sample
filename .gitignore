@@ -2,6 +2,7 @@ composer.phar
 /vendor/
 .idea/
 config.production.ini
+config.development.ini
 config.testing.ini
 config.ini
 
