@@ -27,5 +27,10 @@
     },
     "scripts": {
         "serve": "php -S 0.0.0.0:8888 -t public"
+    },
+    "autoload": {
+        "psr-4": {
+            "Salexandru\\": [ "./src/Salexandru", "./tests/unit/Salexandru" ]
+        }
     }
 }
