@@ -1,10 +1,11 @@
 composer.phar
 /vendor/
 .idea/
-config.production.ini
-config.development.ini
-config.testing.ini
-config.ini
+config/config.production.ini
+config/config.dev.ini
+config/config.testing.ini
+config/config.staging.ini
+config/config.ini
 
 # Commit your application's lock file http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
