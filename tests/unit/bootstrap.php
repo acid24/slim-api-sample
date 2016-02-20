@@ -1,5 +1,5 @@
 <?php
 
-require realpath(__DIR__ . '/../../resources/init/app.php');
+require realpath(__DIR__ . '/../../bootstrap/appinit.php');
 
 date_default_timezone_set('Europe/Bucharest');
