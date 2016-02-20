@@ -90,7 +90,7 @@ final class Configuration
      */
     private function setAlgorithm($algorithm)
     {
-        $allowedAlgorithms = array('sha256' => true, 'sha384' => true, 'sha512' => true);
+        $allowedAlgorithms = ['sha256' => true, 'sha384' => true, 'sha512' => true];
         if (!isset($allowedAlgorithms[$algorithm = strtolower($algorithm)])) {
             $message = sprintf(
                 'Algorithm %s is not allowed. Use one of: %s',

@@ -12,6 +12,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $server = new Server();
         $bootstrap = $server->bootstrap();
 
-        $this->assertInstanceOf(Bootstrapper::class, $bootstrap, sprintf('Should be an instance of %s', Bootstrapper::class));
+        $this->assertInstanceOf(
+            Bootstrapper::class,
+            $bootstrap,
+            sprintf('Should be an instance of %s', Bootstrapper::class)
+        );
     }
 }

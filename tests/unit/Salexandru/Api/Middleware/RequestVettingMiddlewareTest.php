@@ -64,7 +64,10 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['text/plain']));
         $response = $this->response;
 
-        $requestFilters = new RequestVettingMiddleware($this->jwtAdapter, ['expectedContentType' => 'application/json']);
+        $requestFilters = new RequestVettingMiddleware(
+            $this->jwtAdapter,
+            ['expectedContentType' => 'application/json']
+        );
         $requestFilters($request, $response, $this->callable);
     }
 
@@ -85,7 +88,10 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($json));
         $response = $this->response;
 
-        $requestFilters = new RequestVettingMiddleware($this->jwtAdapter, ['expectedContentType' => 'application/json']);
+        $requestFilters = new RequestVettingMiddleware(
+            $this->jwtAdapter,
+            ['expectedContentType' => 'application/json']
+        );
         $requestFilters($request, $response, $this->callable);
     }
 
