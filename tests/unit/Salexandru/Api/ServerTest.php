@@ -2,7 +2,7 @@
 
 namespace Salexandru\Api;
 
-use Salexandru\Api\Server\Bootstrap;
+use Salexandru\Api\Server\Bootstrapper;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,6 +12,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $server = new Server();
         $bootstrap = $server->bootstrap();
 
-        $this->assertInstanceOf(Bootstrap::class, $bootstrap, sprintf('Should be an instance of %s', Bootstrap::class));
+        $this->assertInstanceOf(Bootstrapper::class, $bootstrap, sprintf('Should be an instance of %s', Bootstrapper::class));
     }
 }

@@ -5,7 +5,7 @@ namespace Salexandru\Api\Server;
 use Salexandru\Api\Server;
 use Salexandru\Bootstrap\ConfigInitializer;
 
-class Bootstrap
+class Bootstrapper
 {
 
     private $server;

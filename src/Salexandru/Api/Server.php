@@ -3,7 +3,7 @@
 namespace Salexandru\Api;
 
 use Slim\App as SlimApp;
-use Salexandru\Api\Server\Bootstrap;
+use Salexandru\Api\Server\Bootstrapper;
 
 class Server extends SlimApp
 {
@@ -20,6 +20,6 @@ class Server extends SlimApp
 
     public function bootstrap()
     {
-        return new Bootstrap($this);
+        return new Bootstrapper($this);
     }
 }
