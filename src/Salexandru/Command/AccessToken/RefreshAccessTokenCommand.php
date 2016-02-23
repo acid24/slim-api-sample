@@ -4,15 +4,16 @@ namespace Salexandru\Command\AccessToken;
 
 use Salexandru\Command\AbstractCommand;
 use Salexandru\Command\Exception\InvalidArgumentException;
+use Salexandru\Command\LoggableInterface;
 
-final class RefreshAccessTokenCommand extends AbstractCommand
+final class RefreshAccessTokenCommand extends AbstractCommand implements LoggableInterface
 {
 
     private $currentAccessToken;
 
-    private function __construct()
+    public function __construct($currentAccessToken)
     {
-        // prevent instantiation
+        $this->setCurrentAccessToken($currentAccessToken);
     }
 
     /**
@@ -33,10 +34,5 @@ final class RefreshAccessTokenCommand extends AbstractCommand
         }
 
         $this->currentAccessToken = $currentAccessToken;
-    }
-
-    protected function getRequiredFields()
-    {
-        return ['currentAccessToken'];
     }
 }

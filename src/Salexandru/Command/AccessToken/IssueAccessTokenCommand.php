@@ -4,16 +4,18 @@ namespace Salexandru\Command\AccessToken;
 
 use Salexandru\Command\AbstractCommand;
 use Salexandru\Command\Exception\InvalidArgumentException;
+use Salexandru\Command\LoggableInterface;
 
-final class IssueAccessTokenCommand extends AbstractCommand
+final class IssueAccessTokenCommand extends AbstractCommand implements LoggableInterface
 {
 
     private $username;
     private $password;
 
-    private function __construct()
+    public function __construct($username, $password)
     {
-        // prevent instantiation
+        $this->setUsername($username);
+        $this->setPassword($password);
     }
 
     /**
@@ -48,10 +50,5 @@ final class IssueAccessTokenCommand extends AbstractCommand
         }
 
         $this->password = $password;
-    }
-
-    protected function getRequiredFields()
-    {
-        return ['username', 'password'];
     }
 }
