@@ -20,7 +20,7 @@ class ExecutionPipelineProvider
 
     public function getExecutionPipelineFor(Command $cmd)
     {
-        $pipeline = $this->container->get('executeCommandPipe');
+        $pipeline = $this->container->get('pipe.executeCommand');
 
         if ($cmd instanceof TransactionalInterface) {
             $pipeline = new TransactionPipe($this->container->get('transactionManager'), $pipeline);
