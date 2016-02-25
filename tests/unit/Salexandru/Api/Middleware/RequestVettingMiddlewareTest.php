@@ -10,6 +10,7 @@ use Salexandru\Api\Server\Exception\MissingAccessTokenException;
 use Salexandru\Api\Server\Exception\MissingContentTypeException;
 use Salexandru\Api\Server\Exception\UnsupportedMediaTypeException;
 use Salexandru\Jwt\AdapterInterface as JwtAdapter;
+use \Mockery as m;
 
 class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,11 +21,8 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->jwtAdapter = $this->getMockBuilder(JwtAdapter::class)
-            ->getMock();
-
-        $this->response = $this->getMockBuilder(ResponseInterface::class)
-            ->getMock();
+        $this->jwtAdapter = m::mock(JwtAdapter::class);
+        $this->response = m::mock(ResponseInterface::class);
 
         $this->callable = function (ServerRequestInterface $req, ResponseInterface $res) {
             return $res;
@@ -39,10 +37,9 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(MissingContentTypeException::class);
 
         $request = $this->newRequest($method);
-        $request->expects($this->any())
-            ->method('getHeader')
+        $request->shouldReceive('getHeader')
             ->with('content-type')
-            ->will($this->returnValue(null));
+            ->andReturnNull();
 
         $response = $this->response;
 
@@ -58,10 +55,9 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(UnsupportedMediaTypeException::class);
 
         $request = $this->newRequest($method);
-        $request->expects($this->any())
-            ->method('getHeader')
+        $request->shouldReceive('getHeader')
             ->with('content-type')
-            ->will($this->returnValue(['text/plain']));
+            ->andReturn(['text/plain']);
         $response = $this->response;
 
         $requestFilters = new RequestVettingMiddleware(
@@ -79,13 +75,11 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(InvalidJsonSyntaxException::class);
 
         $request = $this->newRequest($method);
-        $request->expects($this->any())
-            ->method('getHeader')
+        $request->shouldReceive('getHeader')
             ->with('content-type')
-            ->will($this->returnValue(['application/json']));
-        $request->expects($this->any())
-            ->method('getParsedBody')
-            ->will($this->returnValue($json));
+            ->andReturn(['application/json']);
+        $request->shouldReceive('getParsedBody')
+            ->andReturn($json);
         $response = $this->response;
 
         $requestFilters = new RequestVettingMiddleware(
@@ -100,10 +94,9 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(MissingAccessTokenException::class);
 
         $request = $this->newRequest('GET');
-        $request->expects($this->any())
-            ->method('getHeader')
+        $request->shouldReceive('getHeader')
             ->with('authorization')
-            ->will($this->returnValue(null));
+            ->andReturnNull();
         $response = $this->response;
 
         $requestFilters = new RequestVettingMiddleware($this->jwtAdapter, ['requiresAuthorization' => true]);
@@ -117,16 +110,14 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $token = 'a.dummy.token';
 
         $request = $this->newRequest('GET');
-        $request->expects($this->any())
-            ->method('getHeader')
+        $request->shouldReceive('getHeader')
             ->with('authorization')
-            ->will($this->returnValue(["Bearer $token"]));
+            ->andReturn(["Bearer $token"]);
         $response = $this->response;
 
-        $this->jwtAdapter->expects($this->any())
-            ->method('isValidToken')
+        $this->jwtAdapter->shouldReceive('isValidToken')
             ->with($token)
-            ->will($this->returnValue(false));
+            ->andReturn(false);
 
         $requestFilters = new RequestVettingMiddleware($this->jwtAdapter, ['requiresAuthorization' => true]);
         $requestFilters($request, $response, $this->callable);
@@ -137,20 +128,18 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $token = 'a.dummy.token';
 
         $request = $this->newRequest('GET');
-        $request->expects($this->any())
-            ->method('getHeader')
+        $request->shouldReceive('getHeader')
             ->with('authorization')
-            ->will($this->returnValue(["Bearer $token"]));
-        $request->expects($this->once())
-            ->method('withAttribute')
+            ->andReturn(["Bearer $token"]);
+        $request->shouldReceive('withAttribute')
+            ->once()
             ->with('accessToken', $token)
-            ->will($this->returnSelf());
+            ->andReturnSelf();
         $response = $this->response;
 
-        $this->jwtAdapter->expects($this->any())
-            ->method('isValidToken')
+        $this->jwtAdapter->shouldReceive('isValidToken')
             ->with($token)
-            ->will($this->returnValue(true));
+            ->andReturn(true);
 
         $requestFilters = new RequestVettingMiddleware($this->jwtAdapter, ['requiresAuthorization' => true]);
         $requestFilters($request, $response, $this->callable);
@@ -179,12 +168,10 @@ class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
 
     private function newRequest($method)
     {
-        $request = $this->getMockBuilder(ServerRequestInterface::class)
-            ->getMock();
+        $request = m::mock(ServerRequestInterface::class);
 
-        $request->expects($this->any())
-            ->method('getMethod')
-            ->will($this->returnValue($method));
+        $request->shouldReceive('getMethod')
+            ->andReturn($method);
 
         return $request;
     }
