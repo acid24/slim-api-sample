@@ -11,7 +11,7 @@ class ContainerBasedHandlerLocator implements HandlerLocatorInterface
     /**
      * @var array
      */
-    private $map = array();
+    private $map = [];
 
     /**
      * @var Container
