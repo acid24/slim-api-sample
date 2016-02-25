@@ -1,8 +1,6 @@
 <?php
 
-namespace Salexandru\Api\Server\Exception\Handler;
-
-use Salexandru\Command\Handler\Result;
+namespace Salexandru\Command\Handler;
 
 class ResultTest extends \PHPUnit_Framework_TestCase
 {
