@@ -55,7 +55,7 @@ class CommandBusTest extends \PHPUnit_Framework_TestCase
             ->andReturnNull();
 
         $pipelineProvider->shouldReceive('getExecutionPipelineFor')
-            ->zeroOrMoreTimes()
+            ->once()
             ->with($cmd)
             ->andReturn($pipe);
 
