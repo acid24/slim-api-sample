@@ -8,6 +8,7 @@ use Salexandru\Api\Server\Exception\Handler\FallbackHandler;
 use Salexandru\Api\Server\Exception\Handler\MethodNotAllowedHandler;
 use Salexandru\Api\Server\Exception\Handler\NotFoundHandler;
 use Salexandru\Bootstrap\ConfigInitializer;
+use Salexandru\Bootstrap\LoggingInitializer;
 
 class Bootstrapper
 {
@@ -24,6 +25,7 @@ class Bootstrapper
         $this->initConfig();
         $this->initContainerServices();
         $this->initRoutes();
+        $this->initLogging();
 
         $this->overrideSlimHandlers();
 
@@ -34,6 +36,12 @@ class Bootstrapper
     {
         $configInitializer = new ConfigInitializer($this->server->getContainer());
         $configInitializer->run();
+    }
+
+    private function initLogging()
+    {
+        $loggingInitializer = new LoggingInitializer($this->server->getContainer());
+        $loggingInitializer->run();
     }
 
     private function initContainerServices()
