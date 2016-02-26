@@ -4,10 +4,14 @@ namespace Salexandru\CommandBus\Pipeline;
 
 use Salexandru\Command\CommandInterface as Command;
 use Salexandru\Command\Handler\Result;
+use Salexandru\Db\Transaction\Manager\AdapterInterface as TransactionManager;
 
 class TransactionPipe extends AbstractPipe
 {
 
+    /**
+     * @var TransactionManager
+     */
     private $transactionManager;
 
     public function __construct(TransactionManager $transactionManager, PipeInterface $nextPipe)
