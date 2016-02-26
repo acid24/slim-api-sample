@@ -3,12 +3,19 @@
 namespace Salexandru\Api\Server;
 
 use Interop\Container\ContainerInterface as Container;
+use Psr\Log\LoggerInterface as Logger;
+use Salexandru\Api\Middleware\RequestLoggingMiddleware;
+use Salexandru\Api\Middleware\RequestVettingMiddleware;
 use Salexandru\Api\Server;
 use Salexandru\Api\Server\Exception\Handler\FallbackHandler;
 use Salexandru\Api\Server\Exception\Handler\MethodNotAllowedHandler;
 use Salexandru\Api\Server\Exception\Handler\NotFoundHandler;
 use Salexandru\Bootstrap\ConfigInitializer;
 use Salexandru\Bootstrap\LoggingInitializer;
+use Salexandru\Jwt\Adapter\Configuration as AdapterConfiguration;
+use Salexandru\Jwt\Adapter\LcobucciAdapter as JwtAdapter;
+use Salexandru\Jwt\AdapterInterface;
+use Slim\Collection;
 
 class Bootstrapper
 {
@@ -29,6 +36,7 @@ class Bootstrapper
 
         $this->overrideSlimHandlers();
 
+        $this->server->add($this->server->getContainer()->get('middleware.requestLogging'));
         $this->server->run();
     }
 
@@ -46,7 +54,34 @@ class Bootstrapper
 
     private function initContainerServices()
     {
+        /** @var \ArrayAccess $container */
+        $container = $this->server->getContainer();
 
+        $container['jwtAdapter'] = function (Container $c) {
+            /** @var Collection $settings */
+            $settings = $c->get('settings');
+
+            $adapterConfiguration = AdapterConfiguration::loadFromArray($settings->get('jwt'));
+            return new JwtAdapter($adapterConfiguration);
+        };
+
+        $container['middleware.requestVetting.default'] = function (Container $c) {
+            /** @var AdapterInterface $jwtAdapter */
+            $jwtAdapter = $c->get('jwtAdapter');
+            return new RequestVettingMiddleware($jwtAdapter);
+        };
+
+        $container['middleware.requestVetting.noAccessToken'] = function (Container $c) {
+            /** @var AdapterInterface $jwtAdapter */
+            $jwtAdapter = $c->get('jwtAdapter');
+            return new RequestVettingMiddleware($jwtAdapter, ['requiresAccessToken' => false]);
+        };
+
+        $container['middleware.requestLogging'] = function (Container $c) {
+            /** @var Logger $logger */
+            $logger = $c->get('logger.http');
+            return new RequestLoggingMiddleware($logger);
+        };
     }
 
     private function initRoutes()
