@@ -89,12 +89,18 @@ class LcobucciAdapter implements AdapterInterface
 
     /**
      * @param string $token
+     * @param bool $parseOnly
      * @return array
      */
-    public function getTokenClaims($token)
+    public function getTokenClaims($token, $parseOnly = false)
     {
-        /** @var Token $parsedToken */
-        $parsedToken = $this->parseVerifyAndValidateToken($token);
+        if ($parseOnly) {
+            /** @var Token $parsedToken */
+            $parsedToken = $this->parseToken($token);
+        } else {
+            /** @var Token $parsedToken */
+            $parsedToken = $this->parseVerifyAndValidateToken($token);
+        }
 
         $claims = [];
 

@@ -26,7 +26,8 @@ interface AdapterInterface
 
     /**
      * @param string $token
+     * @param bool $parseOnly
      * @return array
      */
-    public function getTokenClaims($token);
+    public function getTokenClaims($token, $parseOnly = false);
 }
