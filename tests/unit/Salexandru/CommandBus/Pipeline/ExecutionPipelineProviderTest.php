@@ -18,7 +18,7 @@ class ExecutionPipelineProviderTest extends \PHPUnit_Framework_TestCase
         $container = m::mock(Container::class)
             ->shouldReceive('get')
             ->once()
-            ->with('pipe.executeCommand')
+            ->with('commandBus.pipe.executeCommand')
             ->andReturn($pipe)
             ->getMock();
 

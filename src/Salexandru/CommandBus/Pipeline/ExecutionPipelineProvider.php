@@ -20,7 +20,7 @@ class ExecutionPipelineProvider
 
     public function getExecutionPipelineFor(Command $cmd)
     {
-        $pipeline = $this->container->get('pipe.executeCommand');
+        $pipeline = $this->container->get('commandBus.pipe.executeCommand');
 
         if ($cmd instanceof TransactionalInterface) {
             $pipeline = new TransactionPipe($this->container->get('transactionManager'), $pipeline);
@@ -31,7 +31,7 @@ class ExecutionPipelineProvider
         }
 
         if ($cmd instanceof LoggableInterface) {
-            $pipeline = new LoggingPipe($this->container->get('appLogger'), $pipeline);
+            $pipeline = new LoggingPipe($this->container->get('logger.app'), $pipeline);
         }
 
         return $pipeline;
