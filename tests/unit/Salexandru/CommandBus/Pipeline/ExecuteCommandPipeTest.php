@@ -2,7 +2,7 @@
 
 namespace Salexandru\CommandBus\Pipeline;
 
-use \Mockery as m;
+use Mockery as m;
 use Salexandru\Command\CommandInterface as Command;
 use Salexandru\CommandBus\Handler\HandleInflector;
 use Salexandru\CommandBus\Handler\HandlerLocatorInterface as HandlerLocator;

@@ -2,7 +2,7 @@
 
 namespace Salexandru\CommandBus;
 
-use \Mockery as m;
+use Mockery as m;
 use Salexandru\Command\CommandInterface as Command;
 use Salexandru\CommandBus\Pipeline\ExecutionPipelineProvider;
 use Salexandru\CommandBus\Exception\IllegalStateException;

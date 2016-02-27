@@ -2,7 +2,7 @@
 
 namespace Salexandru\CommandBus\Handler;
 
-use \Mockery as m;
+use Mockery as m;
 use Interop\Container\ContainerInterface as Container;
 use Salexandru\Command\CommandInterface as Command;
 

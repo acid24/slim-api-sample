@@ -10,7 +10,7 @@ use Salexandru\Api\Server\Exception\MissingAccessTokenException;
 use Salexandru\Api\Server\Exception\MissingContentTypeException;
 use Salexandru\Api\Server\Exception\UnsupportedMediaTypeException;
 use Salexandru\Jwt\AdapterInterface as JwtAdapter;
-use \Mockery as m;
+use Mockery as m;
 
 class RequestVettingMiddlewareTest extends \PHPUnit_Framework_TestCase
 {

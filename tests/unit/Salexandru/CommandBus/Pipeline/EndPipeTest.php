@@ -2,7 +2,7 @@
 
 namespace Salexandru\CommandBus\Pipeline;
 
-use \Mockery as m;
+use Mockery as m;
 use Salexandru\Command\CommandInterface as Command;
 
 class EndPipeTest extends \PHPUnit_Framework_TestCase

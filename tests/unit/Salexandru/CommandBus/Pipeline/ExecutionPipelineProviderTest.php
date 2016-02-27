@@ -2,7 +2,7 @@
 
 namespace Salexandru\CommandBus\Pipeline;
 
-use \Mockery as m;
+use Mockery as m;
 use Interop\Container\ContainerInterface as Container;
 use Salexandru\Command\CommandInterface as Command;
 use Salexandru\CommandBus\Pipeline\PipeInterface as Pipe;

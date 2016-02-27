@@ -2,7 +2,7 @@
 
 namespace Salexandru\CommandBus\Handler;
 
-use \Mockery as m;
+use Mockery as m;
 use Salexandru\Command\CommandInterface as Command;
 
 class HandleInflectorTest extends \PHPUnit_Framework_TestCase
