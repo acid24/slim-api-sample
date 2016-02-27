@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Salexandru\Api\Server\Response\JsonResponseTrait;
 use Salexandru\CommandBus\CommandBusInterface as CommandBus;
 
-abstract class AbstractCommandBusPoweredAction implements ActionInterface
+abstract class AbstractCommandBusPoweredAction
 {
 
     use JsonResponseTrait;
@@ -38,13 +38,13 @@ abstract class AbstractCommandBusPoweredAction implements ActionInterface
         $this->commandBus = $commandBus;
     }
 
-    public function run(Request $req, Response $res, array $args)
+    public function __invoke(Request $req, Response $res, array $args)
     {
         $this->request = $req;
         $this->response = $res;
         $this->args = $args;
 
-        $this->performAction();
+        return $this->performAction();
     }
 
     /**
