@@ -92,9 +92,9 @@ class Bootstrapper
         $defaultRequestVetting = $container->get('middleware.requestVetting.default');
         $tokenlessRequestVetting = $container->get('middleware.requestVetting.noAccessToken');
 
-        $this->server->post('/tokens/actions/issue', $container->get('actions.issueAccessToken'))
+        $this->server->post('/tokens/actions/issue', 'actions.issueAccessToken:run')
             ->add($tokenlessRequestVetting);
-        $this->server->post('/tokens/actions/refresh', $container->get('actions.refreshAccessToken'))
+        $this->server->post('/tokens/actions/refresh', 'actions.refreshAccessToken:run')
             ->add($tokenlessRequestVetting);
     }
 
