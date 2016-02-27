@@ -6,7 +6,7 @@ use Salexandru\Command\AbstractCommand;
 use Salexandru\Command\Exception\InvalidArgumentException;
 use Salexandru\Command\LoggableInterface;
 
-final class IssueAccessTokenCommand extends AbstractCommand implements LoggableInterface
+final class IssueCommand extends AbstractCommand implements LoggableInterface
 {
 
     private $username;

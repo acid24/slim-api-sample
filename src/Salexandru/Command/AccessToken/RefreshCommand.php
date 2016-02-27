@@ -6,7 +6,7 @@ use Salexandru\Command\AbstractCommand;
 use Salexandru\Command\Exception\InvalidArgumentException;
 use Salexandru\Command\LoggableInterface;
 
-final class RefreshAccessTokenCommand extends AbstractCommand implements LoggableInterface
+final class RefreshCommand extends AbstractCommand implements LoggableInterface
 {
 
     private $currentAccessToken;
