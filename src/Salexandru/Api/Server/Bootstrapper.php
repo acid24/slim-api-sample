@@ -69,6 +69,7 @@ class Bootstrapper
     {
         /** @var Container $container */
         $container = $this->server->getContainer();
+        $this->server->add($container->get('middleware.responseLogging'));
         $this->server->add($container->get('middleware.requestLogging'));
     }
 }

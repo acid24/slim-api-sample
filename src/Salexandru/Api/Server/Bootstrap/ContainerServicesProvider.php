@@ -8,6 +8,7 @@ use Interop\Container\ContainerInterface as Container;
 use Pimple\ServiceProviderInterface;
 use Salexandru\Api\Middleware\RequestLoggingMiddleware;
 use Salexandru\Api\Middleware\RequestVettingMiddleware;
+use Salexandru\Api\Middleware\ResponseLoggingMiddleware;
 use Salexandru\Api\Server\Exception\Handler\FallbackHandler;
 use Salexandru\Api\Server\Exception\Handler\MethodNotAllowedHandler;
 use Salexandru\Api\Server\Exception\Handler\NotFoundHandler;
@@ -86,6 +87,12 @@ class ContainerServicesProvider implements ServiceProviderInterface
             /** @var Logger $logger */
             $logger = $c->get('logger.http');
             return new RequestLoggingMiddleware($logger);
+        };
+
+        $this->container['middleware.responseLogging'] = function (Container $c) {
+            /** @var Logger $logger */
+            $logger = $c->get('logger.http');
+            return new ResponseLoggingMiddleware($logger);
         };
     }
 
