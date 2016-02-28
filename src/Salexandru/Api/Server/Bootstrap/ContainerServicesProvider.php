@@ -18,8 +18,6 @@ use Salexandru\Jwt\AdapterInterface;
 use Slim\Collection;
 use Salexandru\Jwt\Adapter\Configuration as AdapterConfiguration;
 use Salexandru\Jwt\Adapter\LcobucciAdapter as JwtAdapter;
-use Salexandru\Command\AccessToken\IssueCommand as IssueAccessTokenCommand;
-use Salexandru\Command\AccessToken\RefreshCommand as RefreshAccessTokenCommand;
 use Salexandru\Command\Handler\AccessToken\IssueHandler as IssueAccessTokenHandler;
 use Salexandru\Command\Handler\AccessToken\RefreshHandler as RefreshAccessTokenHandler;
 
@@ -65,8 +63,6 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
     private function registerInfrastructureServices()
     {
-        $commandToHandlerMap = $this->getCommandToHandlerMap();
-
         $container['jwtAdapter'] = function (Container $c) {
             /** @var Collection $settings */
             $settings = $c->get('settings');
@@ -79,9 +75,9 @@ class ContainerServicesProvider implements ServiceProviderInterface
             return new CommandBus(new ExecutionPipelineProvider($c));
         };
 
-        $container['commandBus.pipe.executeCommand'] = function (Container $c) use ($commandToHandlerMap) {
+        $container['commandBus.pipe.executeCommand'] = function (Container $c) {
             return new ExecuteCommandPipe(
-                new ContainerBasedHandlerLocator($c, $commandToHandlerMap),
+                new ContainerBasedHandlerLocator($c, CommandToHandlerMap::getMap()),
                 new HandleInflector(),
                 new EndPipe()
             );
@@ -101,13 +97,5 @@ class ContainerServicesProvider implements ServiceProviderInterface
             $jwtAdapter = $c->get('jwtAdapter');
             return new RefreshAccessTokenHandler($jwtAdapter);
         };
-    }
-
-    private function getCommandToHandlerMap()
-    {
-        return [
-            IssueAccessTokenCommand::class => 'commandBus.handler.issueAccessToken',
-            RefreshAccessTokenCommand::class => 'commandBus.handler.refreshAccessToken'
-        ];
     }
 }
