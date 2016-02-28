@@ -6,5 +6,5 @@ default:
         paths:
           - %paths.base%/tests/functional/features/AccessTokens
         contexts:
-          - Salexandru\Behat\Context\AccessTokens:
+          - Salexandru\Behat\Context\AccessTokensContext:
               baseUrl: http://localhost:8888
