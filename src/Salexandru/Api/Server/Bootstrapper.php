@@ -29,8 +29,8 @@ class Bootstrapper
         $this->initLogging();
 
         $this->overrideSlimHandlers();
+        $this->addServerLevelMiddleware();
 
-        $this->server->add($this->server->getContainer()->get('middleware.requestLogging'));
         $this->server->run();
     }
 
@@ -83,5 +83,12 @@ class Bootstrapper
         $container['notFoundHandler'] = function () {
             return new NotFoundHandler();
         };
+    }
+
+    private function addServerLevelMiddleware()
+    {
+        /** @var Container $container */
+        $container = $this->server->getContainer();
+        $this->server->add($container->get('middleware.requestLogging'));
     }
 }
