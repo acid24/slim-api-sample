@@ -32,7 +32,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Salexandru\\": [ "./src/Salexandru", "./tests/unit/Salexandru" ]
+            "Salexandru\\": [ "./src/Salexandru", "./tests/unit/Salexandru" ],
+            "Salexandru\\Behat\\Context\\": "./tests/functional/context"
         }
     }
 }

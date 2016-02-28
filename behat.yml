@@ -1,0 +1,10 @@
+default:
+  autoload:
+    - %paths.base%/tests/functional/context
+  suites:
+      access_tokens:
+        paths:
+          - %paths.base%/tests/functional/features/AccessTokens
+        contexts:
+          - Salexandru\Behat\Context\AccessTokens:
+              baseUrl: http://localhost:8888
