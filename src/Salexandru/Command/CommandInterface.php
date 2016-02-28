@@ -20,4 +20,9 @@ interface CommandInterface
      * @return boolean
      */
     public function hasContext();
+
+    /**
+     * @return string
+     */
+    public function getName();
 }

@@ -34,6 +34,14 @@ final class IssueCommand extends AbstractCommand implements LoggableInterface
         return $this->password;
     }
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'IssueAccessToken';
+    }
+
     private function setUsername($username)
     {
         if (!is_string($username) || empty($username)) {

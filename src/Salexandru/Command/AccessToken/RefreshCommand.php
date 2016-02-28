@@ -25,6 +25,14 @@ final class RefreshCommand extends AbstractCommand implements LoggableInterface
     }
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'RefreshAccessToken';
+    }
+
+    /**
      * @param mixed $currentAccessToken
      */
     private function setCurrentAccessToken($currentAccessToken)

@@ -19,21 +19,18 @@ class LoggingPipe extends AbstractPipe
 
     public function receive(Command $cmd)
     {
-        $cmdClass = get_class($cmd);
-
-        $this->logger->info(sprintf('Received command %s', $cmdClass));
+        $this->logger->info('Received command {cmd}', ['cmd' => $cmd->getName()]);
 
         /** @var Result $result */
         $result = $this->nextPipe->receive($cmd);
 
         if ($result->isError()) {
-            $this->logger->error(sprintf(
-                'Error executing command %s; error message was: "%s"',
-                $cmdClass,
-                $result->getLastErrorMessage()
-            ));
+            $this->logger->error(
+                'Error executing {cmd} command; error message was: {err}',
+                ['cmd' => $cmd->getName(), 'err' => $result->getLastErrorMessage()]
+            );
         } else {
-            $this->logger->info(sprintf('Command %s executed successfully', $cmdClass));
+            $this->logger->info('Command {cmd} executed successfully', ['cmd' => $cmd->getName()]);
         }
 
         return $result;
