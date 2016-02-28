@@ -18,29 +18,32 @@ class RequestLoggingMiddleware
 
     public function __invoke(Request $req, Response $res, callable $next)
     {
+        $context = [];
         $serverParams = $req->getServerParams();
-
-        $context = [
-            'ip' => isset($serverParams['REMOTE_ADDR']) ? $serverParams['REMOTE_ADDR'] : 'unknown',
-            'http_method' => $req->getMethod(),
-            'url' => "{$req->getUri()}",
-        ];
-
         $mediaType = $this->extractMediaTypeFrom($req);
-        switch ($mediaType) {
-            case 'application/json':
-            case 'text/plain':
-            case 'text/html':
-                $body = "{$req->getBody()}";
-                break;
-            default:
-                $body = "(not shown)";
-                break;
+        $httpMethod = $req->getMethod();
+
+        $message = 'Received {http_method} request to {url} from IP {ip}';
+        if ($httpMethod === 'POST' || $httpMethod === 'PUT') {
+            $message .= ' with body {body}';
+            switch ($mediaType) {
+                case 'application/json':
+                case 'text/plain':
+                case 'text/html':
+                    $body = "{$req->getBody()}";
+                    break;
+                default:
+                    $body = "(not shown)";
+                    break;
+            }
+            $context['body'] = $body;
         }
+        
+        $context['ip'] = isset($serverParams['REMOTE_ADDR']) ? $serverParams['REMOTE_ADDR'] : 'unknown';
+        $context['http_method'] = $httpMethod;
+        $context['url'] = "{$req->getUri()}";
 
-        $context['body'] = $body;
-
-        $this->logger->info('Received {http_method} request to {url} from IP {ip} with body {body}', $context);
+        $this->logger->info($message, $context);
 
         return $next($req, $res);
     }
