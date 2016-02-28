@@ -2,6 +2,7 @@
 
 namespace Salexandru\Bootstrap;
 
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\PsrLogMessageProcessor;
@@ -57,7 +58,11 @@ class LoggingInitializer extends AbstractResourceInitializer
     {
         $options = $this->getOptions();
 
+        $outputFormat = "[%channel%.%level_name%] %datetime%: %message%\n";
+        $formatter = new LineFormatter($outputFormat, \DateTime::RFC822);
+
         $streamHandler = new StreamHandler($options['path'], $this->map[$options['level']]);
+        $streamHandler->setFormatter($formatter);
         $processor = new PsrLogMessageProcessor();
 
         $this->container['logger.app'] = new Logger('APP', [$streamHandler], [$processor]);
