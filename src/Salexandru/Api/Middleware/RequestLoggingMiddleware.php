@@ -38,7 +38,7 @@ class RequestLoggingMiddleware
             }
             $context['body'] = $body;
         }
-        
+
         $context['ip'] = isset($serverParams['REMOTE_ADDR']) ? $serverParams['REMOTE_ADDR'] : 'unknown';
         $context['http_method'] = $httpMethod;
         $context['url'] = "{$req->getUri()}";
