@@ -4,6 +4,7 @@ namespace Salexandru\Bootstrap;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Monolog\Processor\PsrLogMessageProcessor;
 use Monolog\Processor\WebProcessor;
 use Slim\Collection;
 use Slim\Http\Environment;
@@ -57,9 +58,10 @@ class LoggingInitializer extends AbstractResourceInitializer
         $options = $this->getOptions();
 
         $streamHandler = new StreamHandler($options['path'], $this->map[$options['level']]);
+        $processor = new PsrLogMessageProcessor();
 
-        $this->container['logger.app'] = new Logger('app', [$streamHandler]);
-        $this->container['logger.http'] = new Logger('http', [$streamHandler], [new WebProcessor()]);
-        $this->container['logger.sql'] = new Logger('sql', [$streamHandler]);
+        $this->container['logger.app'] = new Logger('APP', [$streamHandler], [$processor]);
+        $this->container['logger.http'] = new Logger('HTTP', [$streamHandler], [$processor]);
+        $this->container['logger.sql'] = new Logger('SQL', [$streamHandler], [$processor]);
     }
 }
