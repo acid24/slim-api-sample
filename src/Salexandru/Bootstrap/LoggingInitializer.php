@@ -6,7 +6,6 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\PsrLogMessageProcessor;
-use Monolog\Processor\WebProcessor;
 use Slim\Collection;
 use Slim\Http\Environment;
 
