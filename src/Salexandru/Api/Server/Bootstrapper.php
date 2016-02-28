@@ -5,9 +5,6 @@ namespace Salexandru\Api\Server;
 use Interop\Container\ContainerInterface as Container;
 use Salexandru\Api\Server;
 use Salexandru\Api\Server\Bootstrap\ContainerServicesProvider;
-use Salexandru\Api\Server\Exception\Handler\FallbackHandler;
-use Salexandru\Api\Server\Exception\Handler\MethodNotAllowedHandler;
-use Salexandru\Api\Server\Exception\Handler\NotFoundHandler;
 use Salexandru\Bootstrap\ConfigInitializer;
 use Salexandru\Bootstrap\LoggingInitializer;
 
@@ -28,7 +25,6 @@ class Bootstrapper
         $this->initRoutes();
         $this->initLogging();
 
-        $this->overrideSlimHandlers();
         $this->addServerLevelMiddleware();
 
         $this->server->run();
@@ -67,22 +63,6 @@ class Bootstrapper
             ->add($tokenlessRequestVetting);
         $this->server->post('/tokens/actions/refresh', 'actions.refreshAccessToken:run')
             ->add($tokenlessRequestVetting);
-    }
-
-    private function overrideSlimHandlers()
-    {
-        /** @var \ArrayAccess $container */
-        $container = $this->server->getContainer();
-
-        $container['errorHandler'] = function () {
-            return new FallbackHandler();
-        };
-        $container['notAllowedHandler'] = function () {
-            return new MethodNotAllowedHandler();
-        };
-        $container['notFoundHandler'] = function () {
-            return new NotFoundHandler();
-        };
     }
 
     private function addServerLevelMiddleware()

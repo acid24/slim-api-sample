@@ -8,6 +8,9 @@ use Interop\Container\ContainerInterface as Container;
 use Pimple\ServiceProviderInterface;
 use Salexandru\Api\Middleware\RequestLoggingMiddleware;
 use Salexandru\Api\Middleware\RequestVettingMiddleware;
+use Salexandru\Api\Server\Exception\Handler\FallbackHandler;
+use Salexandru\Api\Server\Exception\Handler\MethodNotAllowedHandler;
+use Salexandru\Api\Server\Exception\Handler\NotFoundHandler;
 use Salexandru\CommandBus\CommandBus;
 use Salexandru\CommandBus\Handler\ContainerBasedHandlerLocator;
 use Salexandru\CommandBus\Handler\HandleInflector;
@@ -24,6 +27,10 @@ use Salexandru\Command\Handler\AccessToken\RefreshHandler as RefreshAccessTokenH
 class ContainerServicesProvider implements ServiceProviderInterface
 {
 
+    /**
+     * @var \ArrayAccess
+     */
+    private $container;
 
     /**
      * Registers services on the given container.
@@ -35,26 +42,47 @@ class ContainerServicesProvider implements ServiceProviderInterface
      */
     public function register(PimpleContainer $container)
     {
-        $this->registerMiddlewareServices();
+        $this->setContainer($container);
+
+        $this->registerExceptionHandlers();
+        $this->registerMiddleware();
         $this->registerInfrastructureServices();
         $this->registerApplicationServices();
     }
 
-    private function registerMiddlewareServices()
+    private function setContainer(\ArrayAccess $container)
     {
-        $container['middleware.requestVetting.default'] = function (Container $c) {
+        $this->container = $container;
+    }
+
+    private function registerExceptionHandlers()
+    {
+        $this->container['errorHandler'] = function () {
+            return new FallbackHandler();
+        };
+        $this->container['notAllowedHandler'] = function () {
+            return new MethodNotAllowedHandler();
+        };
+        $this->container['notFoundHandler'] = function () {
+            return new NotFoundHandler();
+        };
+    }
+
+    private function registerMiddleware()
+    {
+        $this->container['middleware.requestVetting.default'] = function (Container $c) {
             /** @var AdapterInterface $jwtAdapter */
             $jwtAdapter = $c->get('jwtAdapter');
             return new RequestVettingMiddleware($jwtAdapter);
         };
 
-        $container['middleware.requestVetting.noAccessToken'] = function (Container $c) {
+        $this->container['middleware.requestVetting.noAccessToken'] = function (Container $c) {
             /** @var AdapterInterface $jwtAdapter */
             $jwtAdapter = $c->get('jwtAdapter');
             return new RequestVettingMiddleware($jwtAdapter, ['requiresAccessToken' => false]);
         };
 
-        $container['middleware.requestLogging'] = function (Container $c) {
+        $this->container['middleware.requestLogging'] = function (Container $c) {
             /** @var Logger $logger */
             $logger = $c->get('logger.http');
             return new RequestLoggingMiddleware($logger);
@@ -63,7 +91,7 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
     private function registerInfrastructureServices()
     {
-        $container['jwtAdapter'] = function (Container $c) {
+        $this->container['jwtAdapter'] = function (Container $c) {
             /** @var Collection $settings */
             $settings = $c->get('settings');
 
@@ -71,11 +99,11 @@ class ContainerServicesProvider implements ServiceProviderInterface
             return new JwtAdapter($adapterConfiguration);
         };
 
-        $container['commandBus'] = function (Container $c) {
+        $this->container['commandBus'] = function (Container $c) {
             return new CommandBus(new ExecutionPipelineProvider($c));
         };
 
-        $container['commandBus.pipe.executeCommand'] = function (Container $c) {
+        $this->container['commandBus.pipe.executeCommand'] = function (Container $c) {
             return new ExecuteCommandPipe(
                 new ContainerBasedHandlerLocator($c, CommandToHandlerMap::getMap()),
                 new HandleInflector(),
@@ -86,13 +114,13 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
     private function registerApplicationServices()
     {
-        $container['commandBus.handler.issueAccessToken'] = function (Container $c) {
+        $this->container['commandBus.handler.issueAccessToken'] = function (Container $c) {
             /** @var AdapterInterface $jwtAdapter */
             $jwtAdapter = $c->get('jwtAdapter');
             return new IssueAccessTokenHandler($jwtAdapter);
         };
 
-        $container['commandBus.handler.refreshAccessToken'] = function (Container $c) {
+        $this->container['commandBus.handler.refreshAccessToken'] = function (Container $c) {
             /** @var AdapterInterface $jwtAdapter */
             $jwtAdapter = $c->get('jwtAdapter');
             return new RefreshAccessTokenHandler($jwtAdapter);
