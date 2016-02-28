@@ -30,7 +30,7 @@ class ResponseLoggingMiddleware
             $context['body'] = "{$response->getBody()}";
         }
 
-        $this->logger->info('Sent {status} response with body {body}');
+        $this->logger->info('Sent {status} response with body {body}', $context);
 
         return $response;
     }
