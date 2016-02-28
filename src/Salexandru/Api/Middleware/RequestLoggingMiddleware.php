@@ -5,6 +5,7 @@ namespace Salexandru\Api\Middleware;
 use Psr\Log\LoggerInterface as Logger;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Salexandru\Util\PsrHttp as PsrHttpUtilities;
 
 class RequestLoggingMiddleware
 {
@@ -20,23 +21,16 @@ class RequestLoggingMiddleware
     {
         $context = [];
         $serverParams = $req->getServerParams();
-        $mediaType = $this->extractMediaTypeFrom($req);
+        $mediaType = PsrHttpUtilities::retrieveMediaTypeFrom($req);
         $httpMethod = $req->getMethod();
 
         $message = 'Received {http_method} request to {url} from IP {ip}';
         if ($httpMethod === 'POST' || $httpMethod === 'PUT') {
             $message .= ' with body {body}';
-            switch ($mediaType) {
-                case 'application/json':
-                case 'text/plain':
-                case 'text/html':
-                    $body = "{$req->getBody()}";
-                    break;
-                default:
-                    $body = "(not shown)";
-                    break;
+            $context['body'] = '(not shown)';
+            if ($mediaType === 'application/json') {
+                $context['body'] = "{$req->getBody()}";
             }
-            $context['body'] = $body;
         }
 
         $context['ip'] = isset($serverParams['REMOTE_ADDR']) ? $serverParams['REMOTE_ADDR'] : 'unknown';
@@ -46,20 +40,5 @@ class RequestLoggingMiddleware
         $this->logger->info($message, $context);
 
         return $next($req, $res);
-    }
-
-    private function extractMediaTypeFrom(Request $req)
-    {
-        $contentType = null;
-        $result = $req->getHeader('content-type');
-        if ($result) {
-            $contentType = $result ? $result[0] : null;
-        }
-
-        if ($contentType) {
-            return strtok($contentType, ';');
-        }
-
-        return null;
     }
 }

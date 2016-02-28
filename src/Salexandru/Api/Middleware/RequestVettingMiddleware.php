@@ -10,6 +10,7 @@ use Salexandru\Api\Server\Exception\MissingAccessTokenException;
 use Salexandru\Api\Server\Exception\MissingContentTypeException;
 use Salexandru\Api\Server\Exception\UnsupportedMediaTypeException;
 use Salexandru\Jwt\AdapterInterface as JwtAdapter;
+use Salexandru\Util\PsrHttp as PsrHttpUtilities;
 
 class RequestVettingMiddleware
 {
@@ -47,7 +48,7 @@ class RequestVettingMiddleware
     private function ensureRequirementsAreMetFor(Request $request)
     {
         if ($request->getMethod() === 'POST' || $request->getMethod() === 'PUT') {
-            $this->ensureExpectedMediaType($mediaType = $this->extractMediaTypeFrom($request));
+            $this->ensureExpectedMediaType($mediaType = PsrHttpUtilities::retrieveMediaTypeFrom($request));
             if ($mediaType === 'application/json') {
                 try {
                     $parsedBody = $request->getParsedBody();
@@ -107,21 +108,6 @@ class RequestVettingMiddleware
             if (is_array($matches) && isset($matches[1])) {
                 return $matches[1];
             }
-        }
-
-        return null;
-    }
-
-    private function extractMediaTypeFrom(Request $req)
-    {
-        $contentType = null;
-        $result = $req->getHeader('content-type');
-        if ($result) {
-            $contentType = $result ? $result[0] : null;
-        }
-
-        if ($contentType) {
-            return strtok($contentType, ';');
         }
 
         return null;
