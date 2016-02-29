@@ -51,9 +51,18 @@ class ConfigInitializer extends AbstractResourceInitializer
         $environment = $this->container->get('environment');
 
         $appEnv = $environment->get('APPLICATION_ENV', 'production');
-        $pathToConfigFile = CONFIG_DIR . "/config.$appEnv.ini";
+
+        if (defined('CONFIG_DIR')) {
+            $dir = CONFIG_DIR;
+        } else {
+            // determine the location by hand if the CONFIG_DIR constant
+            // is not available
+            $dir = realpath(__DIR__ . '/../../../config');
+        }
+
+        $pathToConfigFile = "$dir/config.$appEnv.ini";
         if (!file_exists($pathToConfigFile)) {
-            $pathToConfigFile = CONFIG_DIR . '/config.ini';
+            $pathToConfigFile = "$dir/config.ini";
         }
 
         return $pathToConfigFile;

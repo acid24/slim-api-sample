@@ -6,6 +6,8 @@ use Psr\Log\LoggerInterface as Logger;
 use Pimple\Container as PimpleContainer;
 use Interop\Container\ContainerInterface as Container;
 use Pimple\ServiceProviderInterface;
+use Salexandru\Api\Action\AccessToken\IssueAction as IssueAccessTokenAction;
+use Salexandru\Api\Action\AccessToken\RefreshAction as RefreshAccessTokenAction;
 use Salexandru\Api\Middleware\RequestLoggingMiddleware;
 use Salexandru\Api\Middleware\RequestVettingMiddleware;
 use Salexandru\Api\Middleware\ResponseLoggingMiddleware;
@@ -13,6 +15,7 @@ use Salexandru\Api\Server\Exception\Handler\FallbackHandler;
 use Salexandru\Api\Server\Exception\Handler\MethodNotAllowedHandler;
 use Salexandru\Api\Server\Exception\Handler\NotFoundHandler;
 use Salexandru\CommandBus\CommandBus;
+use Salexandru\CommandBus\CommandBusInterface;
 use Salexandru\CommandBus\Handler\ContainerBasedHandlerLocator;
 use Salexandru\CommandBus\Handler\HandleInflector;
 use Salexandru\CommandBus\Pipeline\EndPipe;
@@ -47,6 +50,7 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
         $this->registerExceptionHandlers();
         $this->registerMiddleware();
+        $this->registerRouteHandlers();
         $this->registerInfrastructureServices();
         $this->registerApplicationServices();
     }
@@ -131,6 +135,21 @@ class ContainerServicesProvider implements ServiceProviderInterface
             /** @var AdapterInterface $jwtAdapter */
             $jwtAdapter = $c->get('jwtAdapter');
             return new RefreshAccessTokenHandler($jwtAdapter);
+        };
+    }
+
+    private function registerRouteHandlers()
+    {
+        $this->container['actions.issueAccessToken'] = function (Container $c) {
+            /** @var CommandBusInterface $commandBus */
+            $commandBus = $c->get('commandBus');
+            return new IssueAccessTokenAction($commandBus);
+        };
+
+        $this->container['actions.refreshAccessToken'] = function (Container $c) {
+            /** @var CommandBusInterface $commandBus */
+            $commandBus = $c->get('commandBus');
+            return new RefreshAccessTokenAction($commandBus);
         };
     }
 }
