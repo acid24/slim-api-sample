@@ -12,7 +12,7 @@ class RequestLoggingMiddlewareTest extends \PHPUnit_Framework_TestCase
 {
 
     private $testIpAddress = '192.168.100.13';
-    private $testUrl = 'http://test.url/dummy/endpoint';
+    private $testEndpoint = '/dummy/endpoint';
 
     /**
      * @var Request
@@ -37,11 +37,12 @@ class RequestLoggingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $request = $this->request->withMethod('GET');
         $response = $this->response;
 
-        $expectedMessage = 'Received {http_method} request to {url} from IP {ip}';
+        $expectedMessage = 'Received {http_method} request to {endpoint} (query params: {query_params}) from IP {ip}';
         $expectedContext = [
             'ip' => $this->testIpAddress,
             'http_method' => 'GET',
-            'url' => $this->testUrl
+            'endpoint' => $this->testEndpoint,
+            'query_params' => 'none'
         ];
 
         $logger = m::mock(Logger::class)
@@ -63,12 +64,13 @@ class RequestLoggingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $request = $this->request->withMethod('POST');
         $response = $this->response;
 
-        $expectedMessage = 'Received {http_method} request to {url} from IP {ip} with body {body}';
+        $expectedMessage = 'Received {http_method} request to {endpoint} (query params: {query_params}) from IP {ip} with body {body}';
         $expectedContext = [
             'body' => '(not shown)',
             'ip' => $this->testIpAddress,
             'http_method' => 'POST',
-            'url' => $this->testUrl
+            'endpoint' => $this->testEndpoint,
+            'query_params' => 'none'
         ];
 
         $logger = m::mock(Logger::class)
@@ -97,12 +99,13 @@ class RequestLoggingMiddlewareTest extends \PHPUnit_Framework_TestCase
             ->withHeader('content-type', 'application/json');
         $response = $this->response;
 
-        $expectedMessage = 'Received {http_method} request to {url} from IP {ip} with body {body}';
+        $expectedMessage = 'Received {http_method} request to {endpoint} (query params: {query_params}) from IP {ip} with body {body}';
         $expectedContext = [
             'body' => $body,
             'ip' => $this->testIpAddress,
             'http_method' => 'POST',
-            'url' => $this->testUrl
+            'endpoint' => $this->testEndpoint,
+            'query_params' => 'none'
         ];
 
         $logger = m::mock(Logger::class)

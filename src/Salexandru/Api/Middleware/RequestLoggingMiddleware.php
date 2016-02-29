@@ -23,8 +23,9 @@ class RequestLoggingMiddleware
         $serverParams = $req->getServerParams();
         $mediaType = PsrHttpUtilities::retrieveMediaTypeFrom($req);
         $httpMethod = $req->getMethod();
+        $uri = $req->getUri();
 
-        $message = 'Received {http_method} request to {url} from IP {ip}';
+        $message = 'Received {http_method} request to {endpoint} (query params: {query_params}) from IP {ip}';
         if ($httpMethod === 'POST' || $httpMethod === 'PUT') {
             $message .= ' with body {body}';
             $context['body'] = '(not shown)';
@@ -35,7 +36,8 @@ class RequestLoggingMiddleware
 
         $context['ip'] = isset($serverParams['REMOTE_ADDR']) ? $serverParams['REMOTE_ADDR'] : 'unknown';
         $context['http_method'] = $httpMethod;
-        $context['url'] = "{$req->getUri()}";
+        $context['endpoint'] = $uri->getPath();
+        $context['query_params'] = $uri->getQuery() ?: 'none';
 
         $this->logger->info($message, $context);
 
