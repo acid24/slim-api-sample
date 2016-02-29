@@ -67,9 +67,19 @@ class AccessTokensContext extends BaseContext
     /**
      * @Given /^I provide my current API access token in the request body$/
      */
-    public function generateAccessToken()
+    public function initRequestBodyWithValidAccessToken()
     {
         parent::generateValidAccessToken();
+        $json = '{ "currentToken": "' . $this->accessToken . '" }';
+        $this->initRequestBody(new PyStringNode([$json], 0));
+    }
+
+    /**
+     * @Given /^I provide an invalid API access token in the request body$/
+     */
+    public function initRequestBodyWithInvalidAccessToken()
+    {
+        parent::generateInvalidAccessToken();
         $json = '{ "currentToken": "' . $this->accessToken . '" }';
         $this->initRequestBody(new PyStringNode([$json], 0));
     }
