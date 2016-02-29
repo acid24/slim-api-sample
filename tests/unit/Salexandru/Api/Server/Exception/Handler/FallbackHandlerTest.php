@@ -11,25 +11,33 @@ use Salexandru\Api\Server\Exception\UnsupportedMediaTypeException;
 use Slim\Http\Environment;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Mockery as m;
+use Psr\Log\LoggerInterface as Logger;
 
 class FallbackHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
     private $request;
     private $response;
+    private $logger;
 
     protected function setUp()
     {
         $env = Environment::mock([]);
         $this->request = Request::createFromEnvironment($env);
         $this->response = new Response();
+        $this->logger = m::mock(Logger::class)
+            ->shouldReceive('info')
+            ->once()
+            ->withAnyArgs()
+            ->getMock();
     }
 
     public function testHandleMissingContentTypeException()
     {
         $exception = new MissingContentTypeException();
 
-        $errorHandler = new FallbackHandler();
+        $errorHandler = new FallbackHandler($this->logger);
         /** @var ResponseInterface $response */
         $response = $errorHandler($this->request, $this->response, $exception);
         $body = json_decode($response->getBody(), true);
@@ -44,7 +52,7 @@ class FallbackHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new UnsupportedMediaTypeException();
 
-        $errorHandler = new FallbackHandler();
+        $errorHandler = new FallbackHandler($this->logger);
         /** @var ResponseInterface $response */
         $response = $errorHandler($this->request, $this->response, $exception);
         $body = json_decode($response->getBody(), true);
@@ -59,7 +67,7 @@ class FallbackHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new InvalidJsonSyntaxException();
 
-        $errorHandler = new FallbackHandler();
+        $errorHandler = new FallbackHandler($this->logger);
         /** @var ResponseInterface $response */
         $response = $errorHandler($this->request, $this->response, $exception);
         $body = json_decode($response->getBody(), true);
@@ -74,7 +82,7 @@ class FallbackHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new MissingAccessTokenException();
 
-        $errorHandler = new FallbackHandler();
+        $errorHandler = new FallbackHandler($this->logger);
         /** @var ResponseInterface $response */
         $response = $errorHandler($this->request, $this->response, $exception);
         $body = json_decode($response->getBody(), true);
@@ -89,7 +97,7 @@ class FallbackHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new InvalidAccessTokenException();
 
-        $errorHandler = new FallbackHandler();
+        $errorHandler = new FallbackHandler($this->logger);
         /** @var ResponseInterface $response */
         $response = $errorHandler($this->request, $this->response, $exception);
         $body = json_decode($response->getBody(), true);
@@ -104,7 +112,7 @@ class FallbackHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new \Exception();
 
-        $errorHandler = new FallbackHandler();
+        $errorHandler = new FallbackHandler($this->logger);
         /** @var ResponseInterface $response */
         $response = $errorHandler($this->request, $this->response, $exception);
         $body = json_decode($response->getBody(), true);

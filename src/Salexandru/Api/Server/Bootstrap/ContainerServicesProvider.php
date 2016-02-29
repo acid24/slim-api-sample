@@ -62,8 +62,10 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
     private function registerExceptionHandlers()
     {
-        $this->container['errorHandler'] = function () {
-            return new FallbackHandler();
+        $this->container['errorHandler'] = function (Container $c) {
+            /** @var Logger $logger */
+            $logger = $c->get('logger.http');
+            return new FallbackHandler($logger);
         };
         $this->container['notAllowedHandler'] = function () {
             return new MethodNotAllowedHandler();
