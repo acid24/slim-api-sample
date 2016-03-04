@@ -21,7 +21,7 @@ class UsersSeeder extends AbstractSeed
 
             $data[] = [
                 'username'      => $faker->userName,
-                'password'      => sha1("secret"),
+                'password'      => password_hash("secret", PASSWORD_BCRYPT, ['cost' => 8]),
                 'time_created'  => $ts,
                 'last_updated'  => $ts
             ];
