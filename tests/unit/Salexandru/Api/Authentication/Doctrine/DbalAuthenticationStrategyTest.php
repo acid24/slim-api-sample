@@ -8,7 +8,6 @@ use Salexandru\Api\Authentication\ApiClient;
 use Salexandru\Authentication\SubjectInterface as Subject;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Salexandru\Authentication\UsernameAndPasswordCredentials;
 
 class DbalAuthenticationStrategyTest extends \PHPUnit_Framework_TestCase
 {
