@@ -5,17 +5,11 @@ namespace Salexandru\Api\Action;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Salexandru\Api\Server\Response\JsonResponseTrait;
-use Salexandru\CommandBus\CommandBusInterface as CommandBus;
 
-abstract class AbstractCommandBusPoweredAction
+abstract class BaseAction
 {
 
     use JsonResponseTrait;
-
-    /**
-     * @var CommandBus
-     */
-    protected $commandBus;
 
     /**
      * @var Request
@@ -32,11 +26,6 @@ abstract class AbstractCommandBusPoweredAction
      * @var array
      */
     protected $args;
-
-    public function __construct(CommandBus $commandBus)
-    {
-        $this->commandBus = $commandBus;
-    }
 
     public function __invoke(Request $req, Response $res, array $args)
     {

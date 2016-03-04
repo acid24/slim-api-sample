@@ -2,13 +2,13 @@
 
 namespace Salexandru\Api\Action\AccessToken;
 
-use Salexandru\Api\Action\AbstractCommandBusPoweredAction;
+use Salexandru\Api\Action\CommandBusPoweredAction;
 use Salexandru\Api\Server;
 use Salexandru\Command\AccessToken\RefreshCommand as RefreshAccessTokenCommand;
 use Salexandru\Command\Exception\ExceptionInterface as CommandException;
 use Salexandru\Command\Handler\Result;
 
-class RefreshAction extends AbstractCommandBusPoweredAction
+class RefreshAction extends CommandBusPoweredAction
 {
 
     protected function performAction()
