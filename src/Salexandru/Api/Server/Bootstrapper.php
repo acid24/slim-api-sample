@@ -48,7 +48,8 @@ class Bootstrapper
         $container = $this->server->getContainer();
         // Take advantage of the fact that Slim uses Pimple container which gives us this
         // nice way of registering container services
-        $container->register(new ContainerServicesProvider());
+        $provider = new ContainerServicesProvider();
+        $provider->register($container);
     }
 
     private function initRoutes()
