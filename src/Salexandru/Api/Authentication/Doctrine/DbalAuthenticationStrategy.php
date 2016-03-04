@@ -33,19 +33,19 @@ class DbalAuthenticationStrategy implements AuthenticationStrategy
 
         /** @var Statement $stmt */
         $stmt = $this->conn->createQueryBuilder()
-            ->select('COUNT(*) AS c')
+            ->select('password')
             ->from('users')
             ->where('username = :username')
-            ->andWhere('password = :password')
             ->setMaxResults(1)
             ->setParameter('username', $credentials->getUsername(), \PDO::PARAM_STR)
-            ->setParameter('password', sha1($credentials->getPassword(), \PDO::PARAM_STR))
             ->execute();
 
-        $stmt->setFetchMode(\PDO::FETCH_NUM);
-        $count = (int)$stmt->fetchColumn();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (false === $row) {
+            return Result::invalidCredentialsFailure('Invalid username and/or password');
+        }
 
-        if ($count !== 1) {
+        if (!password_verify($credentials->getPassword(), $row['password'])) {
             return Result::invalidCredentialsFailure('Invalid username and/or password');
         }
 
