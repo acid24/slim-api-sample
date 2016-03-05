@@ -2,11 +2,11 @@
 
 namespace Salexandru\Command\AccessToken;
 
-use Salexandru\Command\AbstractCommand;
+use Salexandru\Command\BaseCommand;
 use Salexandru\Command\Exception\InvalidArgumentException;
 use Salexandru\Command\LoggableInterface;
 
-final class RefreshCommand extends AbstractCommand implements LoggableInterface
+final class RefreshCommand extends BaseCommand implements LoggableInterface
 {
 
     private $currentAccessToken;

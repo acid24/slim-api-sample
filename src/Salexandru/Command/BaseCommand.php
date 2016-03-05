@@ -2,7 +2,7 @@
 
 namespace Salexandru\Command;
 
-abstract class AbstractCommand implements CommandInterface
+abstract class BaseCommand implements CommandInterface
 {
 
     /**
