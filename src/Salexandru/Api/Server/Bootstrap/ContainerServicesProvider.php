@@ -2,6 +2,8 @@
 
 namespace Salexandru\Api\Server\Bootstrap;
 
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Configuration as DbalConfiguration;
 use Psr\Log\LoggerInterface as Logger;
 use Pimple\Container as PimpleContainer;
 use Interop\Container\ContainerInterface as Container;
@@ -21,12 +23,14 @@ use Salexandru\CommandBus\Handler\HandleInflector;
 use Salexandru\CommandBus\Pipeline\EndPipe;
 use Salexandru\CommandBus\Pipeline\ExecuteCommandPipe;
 use Salexandru\CommandBus\Pipeline\ExecutionPipelineProvider;
+use Salexandru\Db\Logging\DoctrineSqlLogger;
 use Salexandru\Jwt\AdapterInterface;
 use Slim\Collection;
 use Salexandru\Jwt\Adapter\Configuration as AdapterConfiguration;
 use Salexandru\Jwt\Adapter\LcobucciAdapter as JwtAdapter;
 use Salexandru\Command\Handler\AccessToken\IssueHandler as IssueAccessTokenHandler;
 use Salexandru\Command\Handler\AccessToken\RefreshHandler as RefreshAccessTokenHandler;
+use Slim\Http\Environment;
 
 class ContainerServicesProvider implements ServiceProviderInterface
 {
@@ -104,6 +108,30 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
     private function registerInfrastructureServices()
     {
+        $this->container['db.connection'] = function (Container $c) {
+            /** @var Environment $environment */
+            $environment = $this->container->get('environment');
+            $appEnv = $environment->get('APPLICATION_ENV', 'production');
+
+            $configuration = new DbalConfiguration();
+            if ($appEnv !== 'production') {
+                /** @var Logger $logger */
+                $logger = $c->get('logger.sql');
+                $configuration->setSQLLogger(new DoctrineSqlLogger($logger));
+            }
+
+            /** @var Collection $settings */
+            $settings = $c->get('settings');
+            $db = $settings->get('db');
+
+            $params = [
+                'driver' => $db['driver'],
+                'path' => $db['path']
+            ];
+
+            return DriverManager::getConnection($params, $configuration);
+        };
+
         $this->container['jwtAdapter'] = function (Container $c) {
             /** @var Collection $settings */
             $settings = $c->get('settings');
