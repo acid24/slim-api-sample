@@ -78,17 +78,16 @@ Scenario: Malformed JSON inside the request body
   Then the status code should be 400
   And the error code inside the response body should be "ERR-000006"
 
-Scenario: GET requests not allowed
-  Given I make a "GET" request to the "/tokens/actions/issue" endpoint
+Scenario Outline: GET and DELETE requests not allowed
+  Given I make a "<method>" request to the "/tokens/actions/issue" endpoint
   When I receive the response
   Then the status code should be 405
   And the error code inside the response body should be "ERR-000002"
 
-Scenario: DELETE requests not allowed
-  Given I make a "DELETE" request to the "/tokens/actions/issue" endpoint
-  When I receive the response
-  Then the status code should be 405
-  And the error code inside the response body should be "ERR-000002"
+Examples:
+  | method |
+  | GET    |
+  | DELETE |
 
 Scenario: PUT requests not allowed
   Given I make a "PUT" request to the "/tokens/actions/issue" endpoint
