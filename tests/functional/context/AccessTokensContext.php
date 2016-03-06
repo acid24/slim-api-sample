@@ -3,6 +3,7 @@
 namespace Salexandru\Behat\Context;
 
 use Behat\Gherkin\Node\PyStringNode;
+use Doctrine\DBAL\Connection;
 use Salexandru\Behat\Context\Exception\RuntimeException;
 use Salexandru\Jwt\Adapter\LcobucciAdapter as JwtAdapter;
 
@@ -82,6 +83,38 @@ class AccessTokensContext extends BaseContext
         parent::generateInvalidAccessToken();
         $json = '{ "currentToken": "' . $this->accessToken . '" }';
         $this->initRequestBody(new PyStringNode([$json], 0));
+    }
+
+    /**
+     * @Given /^there is a user in database with username "([^"]+)" and password "([^"]+)"$/
+     */
+    public function createTestUser($username, $password)
+    {
+        $sql = '
+          INSERT INTO users
+            (username, password, time_created, last_updated)
+              VALUES
+            (:username, :password, :now, :now)
+        ';
+
+        $now = (new \DateTime())->getTimestamp();
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT, ['cost' => 8]);
+
+        /** @var Connection $conn */
+        $conn = self::$container->get('dbConnection');
+        $conn->executeUpdate($sql, ['username' => $username, 'password' => $hashedPassword, 'now' => $now]);
+    }
+
+    /**
+     * @AfterScenario @createsTestUser
+     */
+    public function deleteTestUser()
+    {
+        $sql = 'DELETE FROM users WHERE username = :username';
+
+        /** @var Connection $conn */
+        $conn = self::$container->get('dbConnection');
+        $conn->executeUpdate($sql, ['username' => 'behat']);
     }
 
     private function ensureTokenIsValid($token)

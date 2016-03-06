@@ -3,11 +3,13 @@ Feature: Issue access token in exchange for user credentials
   I want to exchange my user credentials for an API token
   So that I can access restricted endpoints of the API
 
+@createsTestUser
 Scenario: Issue access token in exchange for user credentials
-  Given I make a "POST" request to the "/tokens/actions/issue" endpoint
+  Given there is a user in database with username "behat" and password "behat"
+  And I make a "POST" request to the "/tokens/actions/issue" endpoint
   And the request body is:
   """
-  { "username": "test", "password": "password" }
+  { "username": "behat", "password": "behat" }
   """
   When I receive the response
   Then the status code should be 200

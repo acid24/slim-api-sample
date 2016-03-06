@@ -8,13 +8,15 @@ use GuzzleHttp\Client as HttpClient;
 use Behat\Gherkin\Node\PyStringNode;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Response;
+use Interop\Container\ContainerInterface as Container;
+use Salexandru\Api\Server\Bootstrap\ContainerServicesProvider;
 use Salexandru\Behat\Context\Exception\OutOfBoundsException;
 use Salexandru\Behat\Context\Exception\UnexpectedValueException;
 use Salexandru\Bootstrap\ConfigInitializer;
 use Salexandru\Jwt\AdapterInterface;
 use Salexandru\Jwt\Adapter\LcobucciAdapter as JwtAdapter;
 use Salexandru\Jwt\Adapter\Configuration as AdapterConfiguration;
-use Slim\Container;
+use Slim\Container as SlimContainer;
 
 class BaseContext implements Context, SnippetAcceptingContext
 {
@@ -59,9 +61,29 @@ class BaseContext implements Context, SnippetAcceptingContext
      */
     protected $accessToken;
 
+    /**
+     * @var Container
+     */
+    protected static $container;
+
     public function __construct($baseUrl)
     {
         $this->httpClient = new HttpClient(['base_uri' => $baseUrl]);
+    }
+
+    /**
+     * @BeforeSuite
+     */
+    public static function bootstrap()
+    {
+        require realpath(__DIR__ . '/../../../bootstrap/constants.php');
+
+        (new ConfigInitializer($container = new SlimContainer([])))
+            ->run();
+        (new ContainerServicesProvider())
+            ->register($container);
+
+        self::$container = $container;
     }
 
     /**
@@ -212,11 +234,7 @@ class BaseContext implements Context, SnippetAcceptingContext
 
     protected function newJwtAdapter(array $settings = null)
     {
-        $container = new Container([]);
-        $configInitializer = new ConfigInitializer($container);
-        $configInitializer->run();
-
-        $iniSettings = $container->get('settings')['jwt'];
+        $iniSettings = self::$container->get('settings')['jwt'];
         if (null === $settings) {
             $settings = $iniSettings;
         } else {
