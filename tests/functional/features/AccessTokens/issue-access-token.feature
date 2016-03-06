@@ -24,12 +24,12 @@ Scenario Outline: Missing/invalid fields in the input JSON
   Then the status code should be 400
   And the error code inside the response body should be "ERR-000009"
 
-Examples:
-  | body                                   |
-  | { "user": "test", "password": "test" } |
-  | { "username": "test", "pass": "test" } |
-  | { "username": "", "password": "test" } |
-  | { "username": "test", "password": "" } |
+  Examples:
+    | body                                   |
+    | { "user": "test", "password": "test" } |
+    | { "username": "test", "pass": "test" } |
+    | { "username": "", "password": "test" } |
+    | { "username": "test", "password": "" } |
 
 Scenario: Missing Content-Type header
   Given I make a "POST" request to the "/tokens/actions/issue" endpoint
@@ -61,10 +61,10 @@ Scenario Outline: GET and DELETE requests not allowed
   Then the status code should be 405
   And the error code inside the response body should be "ERR-000002"
 
-Examples:
-  | method |
-  | GET    |
-  | DELETE |
+  Examples:
+    | method |
+    | GET    |
+    | DELETE |
 
 Scenario: PUT requests not allowed
   Given I make a "PUT" request to the "/tokens/actions/issue" endpoint

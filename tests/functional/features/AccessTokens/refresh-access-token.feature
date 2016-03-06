@@ -11,25 +11,20 @@ Scenario: Refresh access token
   And the "data.token" property inside the response body should contain a valid API access token with an extended expiration time
   And the "data.expiresAt" property inside the response body should contain a valid future unix timestamp
 
-Scenario: Missing current access token in the input
+Scenario Outline: Missing/invalid fields in the input JSON
   Given I make a "POST" request to the "/tokens/actions/refresh" endpoint
   And the request body is:
   """
-  {}
+  <body>
   """
   When I receive the response
   Then the status code should be 400
   And the error code inside the response body should be "ERR-000009"
 
-Scenario: Missing current access token in the input
-  Given I make a "POST" request to the "/tokens/actions/refresh" endpoint
-  And the request body is:
-  """
-  { "currentToken": "" }
-  """
-  When I receive the response
-  Then the status code should be 400
-  And the error code inside the response body should be "ERR-000009"
+  Examples:
+    | body                   |
+    | {}                     |
+    | { "currentToken": "" } |
 
 Scenario:
   Given I make a "POST" request to the "/tokens/actions/refresh" endpoint
@@ -68,10 +63,10 @@ Scenario Outline: GET and DELETE requests not allowed
   Then the status code should be 405
   And the error code inside the response body should be "ERR-000002"
 
-Examples:
-  | method |
-  | GET    |
-  | DELETE |
+  Examples:
+    | method |
+    | GET    |
+    | DELETE |
 
 Scenario: PUT requests not allowed
   Given I make a "PUT" request to the "/tokens/actions/refresh" endpoint
