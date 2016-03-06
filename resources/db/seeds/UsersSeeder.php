@@ -14,19 +14,31 @@ class UsersSeeder extends AbstractSeed
      */
     public function run()
     {
-        $faker = Faker\Factory::create();
-        $data = [];
-        for ($i = 0; $i < 100; $i++) {
-            $ts = (new \DateTime())->getTimestamp();
+        $ts = (new \DateTime())->getTimestamp();
 
-            $data[] = [
-                'username'      => $faker->userName,
-                'password'      => password_hash("secret", PASSWORD_BCRYPT, ['cost' => 8]),
-                'time_created'  => $ts,
-                'last_updated'  => $ts
-            ];
-        }
+        $user1 = [
+            'username' => 'user1',
+            'password' => password_hash("secret", PASSWORD_BCRYPT, ['cost' => 8]),
+            'time_created'  => $ts,
+            'last_updated'  => $ts
+        ];
 
-        $this->insert('users', $data);
+        $user2 = [
+            'username' => 'user2',
+            'password' => password_hash("secret", PASSWORD_BCRYPT, ['cost' => 8]),
+            'time_created'  => $ts,
+            'last_updated'  => $ts
+        ];
+
+        $user3 = [
+            'username' => 'user3',
+            'password' => password_hash("secret", PASSWORD_BCRYPT, ['cost' => 8]),
+            'time_created'  => $ts,
+            'last_updated'  => $ts
+        ];
+
+        $this->insert('users', $user1);
+        $this->insert('users', $user2);
+        $this->insert('users', $user3);
     }
 }
