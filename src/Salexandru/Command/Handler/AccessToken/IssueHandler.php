@@ -2,6 +2,9 @@
 
 namespace Salexandru\Command\Handler\AccessToken;
 
+use Salexandru\Api\Authentication\ApiClient;
+use Salexandru\Authentication\AuthenticationManager;
+use Salexandru\Authentication\Result as AuthResult;
 use Salexandru\Command\AccessToken\IssueCommand;
 use Salexandru\Command\Handler\Result;
 use Salexandru\Jwt\AdapterInterface as JwtAdapter;
@@ -9,16 +12,23 @@ use Salexandru\Jwt\AdapterInterface as JwtAdapter;
 class IssueHandler
 {
 
+    private $authManager;
     private $jwtAdapter;
 
-    public function __construct(JwtAdapter $jwtAdapter)
+    public function __construct(AuthenticationManager $authManager, JwtAdapter $jwtAdapter)
     {
         $this->jwtAdapter = $jwtAdapter;
+        $this->authManager = $authManager;
     }
 
     public function handle(IssueCommand $cmd)
     {
-        // @todo check user credentials against database
+        $apiClient = new ApiClient($cmd->getUsername(), $cmd->getPassword());
+        /** @var AuthResult $authResult */
+        $authResult = $this->authManager->authenticate($apiClient);
+        if ($authResult->isFailure()) {
+            return Result::invalidUserCredentialsError();
+        }
 
         try {
             $token = $this->jwtAdapter->generateToken();

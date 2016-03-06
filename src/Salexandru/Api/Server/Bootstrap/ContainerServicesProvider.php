@@ -2,6 +2,7 @@
 
 namespace Salexandru\Api\Server\Bootstrap;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Configuration as DbalConfiguration;
 use Psr\Log\LoggerInterface as Logger;
@@ -10,12 +11,14 @@ use Interop\Container\ContainerInterface as Container;
 use Pimple\ServiceProviderInterface;
 use Salexandru\Api\Action\AccessToken\IssueAction as IssueAccessTokenAction;
 use Salexandru\Api\Action\AccessToken\RefreshAction as RefreshAccessTokenAction;
+use Salexandru\Api\Authentication\Doctrine\DbalAuthenticationStrategy;
 use Salexandru\Api\Middleware\RequestLoggingMiddleware;
 use Salexandru\Api\Middleware\RequestVettingMiddleware;
 use Salexandru\Api\Middleware\ResponseLoggingMiddleware;
 use Salexandru\Api\Server\Exception\Handler\FallbackHandler;
 use Salexandru\Api\Server\Exception\Handler\MethodNotAllowedHandler;
 use Salexandru\Api\Server\Exception\Handler\NotFoundHandler;
+use Salexandru\Authentication\AuthenticationManager;
 use Salexandru\CommandBus\CommandBus;
 use Salexandru\CommandBus\CommandBusInterface;
 use Salexandru\CommandBus\Handler\ContainerBasedHandlerLocator;
@@ -108,7 +111,7 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
     private function registerInfrastructureServices()
     {
-        $this->container['db.connection'] = function (Container $c) {
+        $this->container['dbConnection'] = function (Container $c) {
             /** @var Environment $environment */
             $environment = $this->container->get('environment');
             $appEnv = $environment->get('APPLICATION_ENV', 'production');
@@ -151,14 +154,24 @@ class ContainerServicesProvider implements ServiceProviderInterface
                 new EndPipe()
             );
         };
+
+        $this->container['authManager'] = function (Container $c) {
+            /** @var Connection $connection */
+            $connection = $c->get('dbConnection');
+            $strategy = new DbalAuthenticationStrategy($connection);
+
+            return new AuthenticationManager($strategy);
+        };
     }
 
     private function registerApplicationServices()
     {
         $this->container['commandBus.handler.issueAccessToken'] = function (Container $c) {
+            /** @var AuthenticationManager $authManager */
+            $authManager = $c->get('authManager');
             /** @var AdapterInterface $jwtAdapter */
             $jwtAdapter = $c->get('jwtAdapter');
-            return new IssueAccessTokenHandler($jwtAdapter);
+            return new IssueAccessTokenHandler($authManager, $jwtAdapter);
         };
 
         $this->container['commandBus.handler.refreshAccessToken'] = function (Container $c) {
