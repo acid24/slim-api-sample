@@ -64,8 +64,14 @@ class LoggingInitializer extends AbstractResourceInitializer
         $streamHandler->setFormatter($formatter);
         $processor = new PsrLogMessageProcessor();
 
-        $this->container['logger.app'] = new Logger('APP', [$streamHandler], [$processor]);
-        $this->container['logger.http'] = new Logger('HTTP', [$streamHandler], [$processor]);
-        $this->container['logger.sql'] = new Logger('SQL', [$streamHandler], [$processor]);
+        $this->container['logger.app'] = function () use ($streamHandler, $processor) {
+            new Logger('APP', [$streamHandler], [$processor]);
+        };
+        $this->container['logger.http'] = function () use ($streamHandler, $processor) {
+            new Logger('HTTP', [$streamHandler], [$processor]);
+        };
+        $this->container['logger.sql'] = function () use ($streamHandler, $processor) {
+            new Logger('SQL', [$streamHandler], [$processor]);
+        };
     }
 }
