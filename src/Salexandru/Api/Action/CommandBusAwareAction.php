@@ -4,7 +4,7 @@ namespace Salexandru\Api\Action;
 
 use Salexandru\CommandBus\CommandBusInterface as CommandBus;
 
-abstract class CommandBusPoweredAction extends BaseAction
+abstract class CommandBusAwareAction extends BaseAction
 {
 
     /**

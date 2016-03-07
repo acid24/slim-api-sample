@@ -2,13 +2,13 @@
 
 namespace Salexandru\Api\Action\AccessToken;
 
-use Salexandru\Api\Action\CommandBusPoweredAction;
+use Salexandru\Api\Action\CommandBusAwareAction;
 use Salexandru\Api\Server;
 use Salexandru\Command\AccessToken\IssueCommand as IssueAccessTokenCommand;
 use Salexandru\Command\Exception\ExceptionInterface as CommandException;
 use Salexandru\Command\Handler\Result;
 
-class IssueAction extends CommandBusPoweredAction
+class IssueAction extends CommandBusAwareAction
 {
 
     protected function performAction()
