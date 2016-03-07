@@ -16,20 +16,18 @@ class DefaultRegistry implements RegistryInterface
         $this->container = $container;
     }
 
-    public function addHandlerFor(Command $cmd, $handler)
+    public function addHandlerFor($cmd, $handler)
     {
-        $this->storage[get_class($cmd)] = $handler;
+        $this->storage[$cmd] = $handler;
     }
 
-    public function getHandlerFor(Command $cmd)
+    public function getHandlerFor($cmd)
     {
-        $class = get_class($cmd);
-
-        if (!isset($this->storage[$class])) {
+        if (!isset($this->storage[$cmd])) {
             return null;
         }
 
-        $handler = $this->storage[$class];
+        $handler = $this->storage[$cmd];
 
         if (is_string($handler)) {
             if (!$this->container->has($handler)) {

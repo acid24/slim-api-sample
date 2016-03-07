@@ -26,8 +26,10 @@ use Salexandru\Authentication\AuthenticationManager;
 use Salexandru\Bootstrap\ConfigInitializer;
 use Salexandru\CommandBus\CommandBus;
 use Salexandru\CommandBus\CommandBusInterface;
-use Salexandru\CommandBus\Handler\ContainerBasedHandlerLocator;
-use Salexandru\CommandBus\Handler\HandleInflector;
+use Salexandru\CommandBus\Handler\Locator\RegistryBasedHandlerLocator;
+use Salexandru\CommandBus\Handler\Inflector\HandleInflector;
+use Salexandru\CommandBus\Handler\Registry\DefaultRegistry;
+use Salexandru\CommandBus\Handler\Registry\RegistryInterface as HandlerRegistry;
 use Salexandru\CommandBus\Pipeline\EndPipe;
 use Salexandru\CommandBus\Pipeline\ExecuteCommandPipe;
 use Salexandru\CommandBus\Pipeline\ExecutionPipelineProvider;
@@ -202,11 +204,18 @@ class ContainerServicesProvider implements ServiceProviderInterface
         };
 
         $this->container['commandBus.pipe.executeCommand'] = function (Container $c) {
+            /** @var HandlerRegistry $handlerRegistry */
+            $handlerRegistry = $c->get('commandBus.handler.registry');
+
             return new ExecuteCommandPipe(
-                new ContainerBasedHandlerLocator($c, CommandToHandlerMap::getMap()),
+                new RegistryBasedHandlerLocator($handlerRegistry),
                 new HandleInflector(),
                 new EndPipe()
             );
+        };
+
+        $this->container['commandBus.handler.registry'] = function (Container $c) {
+            return new DefaultRegistry($c);
         };
 
         $this->container['authManager'] = function (Container $c) {

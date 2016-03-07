@@ -20,7 +20,7 @@ class RegistryBasedHandlerLocatorTest extends \PHPUnit_Framework_TestCase
         $registry = m::mock(HandlerRegistry::class)
             ->shouldReceive('getHandlerFor')
             ->once()
-            ->with($cmd)
+            ->with($cmd->mockery_getName())
             ->andReturn($expectedHandler)
             ->getMock();
 

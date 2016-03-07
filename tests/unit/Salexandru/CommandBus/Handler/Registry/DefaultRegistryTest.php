@@ -4,7 +4,6 @@ namespace Salexandru\CommandBus\Handler\Registry;
 
 use Mockery as m;
 use Interop\Container\ContainerInterface as Container;
-use Salexandru\Command\CommandInterface as Command;
 
 class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,7 +11,7 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
     public function testRetrieveHandlerBypassingContainer()
     {
         $handler = new \stdClass();
-        $cmd = m::mock(Command::class);
+        $cmd = 'test';
 
         $container = m::mock(Container::class);
         $container->shouldNotReceive('has');
@@ -26,7 +25,7 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testRegistryReturnsNullIfHandlerNotPresentInStorage()
     {
-        $cmd = m::mock(Command::class);
+        $cmd = 'test';
 
         $container = m::mock(Container::class);
         $container->shouldNotReceive('has');
@@ -40,7 +39,7 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
     public function testRegistryReturnsNullIfHandlerNotPresentInContainer()
     {
         $handlerKey = 'handler.test';
-        $cmd = m::mock(Command::class);
+        $cmd = 'test';
 
         $container = m::mock(Container::class);
         $container->shouldReceive('has')
@@ -58,7 +57,7 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
     {
         $handler = new \stdClass();
         $handlerKey = 'handler.test';
-        $cmd = m::mock(Command::class);
+        $cmd = 'test';
 
         $container = m::mock(Container::class);
         $container->shouldReceive('has')

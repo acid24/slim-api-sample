@@ -5,8 +5,9 @@ namespace Salexandru\Api\Server;
 use Interop\Container\ContainerInterface as Container;
 use Salexandru\Api\Server;
 use Salexandru\Api\Server\Bootstrap\ContainerServicesProvider;
-use Salexandru\Bootstrap\ConfigInitializer;
-use Salexandru\Bootstrap\LoggingInitializer;
+use Salexandru\CommandBus\Handler\Registry\RegistryInterface as HandlerRegistry;
+use Salexandru\Command\AccessToken\IssueCommand as IssueAccessTokenCommand;
+use Salexandru\Command\AccessToken\RefreshCommand as RefreshAccessTokenCommand;
 
 class Bootstrapper
 {
@@ -23,6 +24,7 @@ class Bootstrapper
         $this->initContainerServices();
         $this->initRoutes();
 
+        $this->fillCommandHandlerRegistry();
         $this->addServerLevelMiddleware();
 
         $this->server->run();
@@ -58,5 +60,15 @@ class Bootstrapper
         $container = $this->server->getContainer();
         $this->server->add($container->get('middleware.responseLogging'));
         $this->server->add($container->get('middleware.requestLogging'));
+    }
+
+    private function fillCommandHandlerRegistry()
+    {
+        /** @var Container $container */
+        $container = $this->server->getContainer();
+        /** @var HandlerRegistry $handlerRegistry */
+        $handlerRegistry = $container->get('commandBus.handler.registry');
+        $handlerRegistry->addHandlerFor(IssueAccessTokenCommand::class, 'commandBus.handler.issueAccessToken');
+        $handlerRegistry->addHandlerFor(RefreshAccessTokenCommand::class, 'commandBus.handler.refreshAccessToken');
     }
 }
