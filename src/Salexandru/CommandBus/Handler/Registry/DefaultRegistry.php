@@ -41,9 +41,4 @@ class DefaultRegistry implements RegistryInterface
 
         return $handler;
     }
-
-    public function clear()
-    {
-        $this->storage = [];
-    }
 }

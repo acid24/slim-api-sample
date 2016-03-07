@@ -9,5 +9,4 @@ interface RegistryInterface
 
     public function addHandlerFor(Command $cmd, $handler);
     public function getHandlerFor(Command $cmd);
-    public function clear();
 }
