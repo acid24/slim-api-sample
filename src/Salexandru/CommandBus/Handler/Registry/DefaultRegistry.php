@@ -17,7 +17,9 @@ class DefaultRegistry implements RegistryInterface
 
     public function addHandler($key, $handler)
     {
-        $this->storage[$key] = $handler;
+        if (is_string($handler) && $this->container->has($handler)) {
+            $this->storage[$key] = $handler;
+        }
     }
 
     public function getHandler($key)
@@ -26,16 +28,6 @@ class DefaultRegistry implements RegistryInterface
             return null;
         }
 
-        $handler = $this->storage[$key];
-
-        if (is_string($handler)) {
-            if (!$this->container->has($handler)) {
-                return null;
-            }
-
-            $handler = $this->container->get($handler);
-        }
-
-        return $handler;
+        return $this->container->get($this->storage[$key]);
     }
 }

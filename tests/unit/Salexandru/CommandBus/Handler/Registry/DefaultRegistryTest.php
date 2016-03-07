@@ -8,70 +8,55 @@ use Interop\Container\ContainerInterface as Container;
 class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testRetrieveHandlerBypassingContainer()
+    public function testHandlerNotAddedToRegistryIfItDoesNotPointToServiceInsideContainer()
     {
-        $handler = new \stdClass();
-        $cmd = 'test';
-
-        $container = m::mock(Container::class);
-        $container->shouldNotReceive('has');
-        $container->shouldNotReceive('get');
+        $container = m::mock(Container::class)
+            ->shouldReceive('has')
+            ->once()
+            ->with($handler = 'handler.test')
+            ->andReturn(false)
+            ->getMock();
 
         $registry = new DefaultRegistry($container);
-        $registry->addHandler($cmd, $handler);
+        $registry->addHandler('test', $handler);
 
-        $this->assertSame($handler, $registry->getHandler($cmd));
+        $this->assertNull($registry->getHandler('test'));
     }
 
-    public function testRegistryReturnsNullIfHandlerNotPresentInStorage()
+    public function testRegistryReturnsNullIfHandlerIsNotPresentInStorage()
     {
-        $cmd = 'test';
-
-        $container = m::mock(Container::class);
-        $container->shouldNotReceive('has');
-        $container->shouldNotReceive('get');
+        $container = m::mock(Container::class)
+            ->shouldReceive('has')
+            ->once()
+            ->with($handler = 'handler.test')
+            ->andReturn(true)
+            ->getMock();
 
         $registry = new DefaultRegistry($container);
+        $registry->addHandler('test', $handler);
 
-        $this->assertNull($registry->getHandler($cmd));
+        $this->assertNull($registry->getHandler('non-existent'));
     }
 
-    public function testRegistryReturnsNullIfHandlerNotPresentInContainer()
+    public function testRetrieveHandler()
     {
-        $handlerKey = 'handler.test';
-        $cmd = 'test';
+        $h = function () {
+            // handle something
+        };
 
         $container = m::mock(Container::class);
         $container->shouldReceive('has')
-            ->with($handlerKey)
             ->once()
-            ->andReturn(false);
-
-        $registry = new DefaultRegistry($container);
-        $registry->addHandler($cmd, $handlerKey);
-
-        $this->assertNull($registry->getHandler($cmd));
-    }
-
-    public function testRetrieveHandlerUsingContainer()
-    {
-        $handler = new \stdClass();
-        $handlerKey = 'handler.test';
-        $cmd = 'test';
-
-        $container = m::mock(Container::class);
-        $container->shouldReceive('has')
-            ->with($handlerKey)
-            ->once()
+            ->with($handler = 'handler.test')
             ->andReturn(true);
         $container->shouldReceive('get')
-            ->with($handlerKey)
             ->once()
-            ->andReturn($handler);
+            ->with($handler)
+            ->andReturn($h);
 
         $registry = new DefaultRegistry($container);
-        $registry->addHandler($cmd, $handlerKey);
+        $registry->addHandler('test', $handler);
 
-        $this->assertSame($handler, $registry->getHandler($cmd));
+        $this->assertSame($h, $registry->getHandler('test'));
     }
 }
