@@ -78,10 +78,8 @@ class BaseContext implements Context, SnippetAcceptingContext
     {
         require realpath(__DIR__ . '/../../../bootstrap/constants.php');
 
-        (new ConfigInitializer($container = new SlimContainer([])))
-            ->run();
         (new ContainerServicesProvider())
-            ->register($container);
+            ->register($container = new SlimContainer([]));
 
         self::$container = $container;
     }

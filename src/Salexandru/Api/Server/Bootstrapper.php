@@ -20,26 +20,12 @@ class Bootstrapper
 
     public function run()
     {
-        $this->initConfig();
         $this->initContainerServices();
         $this->initRoutes();
-        $this->initLogging();
 
         $this->addServerLevelMiddleware();
 
         $this->server->run();
-    }
-
-    private function initConfig()
-    {
-        $configInitializer = new ConfigInitializer($this->server->getContainer());
-        $configInitializer->run();
-    }
-
-    private function initLogging()
-    {
-        $loggingInitializer = new LoggingInitializer($this->server->getContainer());
-        $loggingInitializer->run();
     }
 
     private function initContainerServices()
