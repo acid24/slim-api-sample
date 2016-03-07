@@ -83,10 +83,9 @@ class ContainerServicesProvider implements ServiceProviderInterface
     {
         /** @var Environment $environment */
         $environment = $this->container['environment'];
-        $appEnv = $environment->get('APPLICATION_ENV', 'production');
 
         $path = sys_get_temp_dir() . '/app.log';
-        $level = $appEnv === 'production' ? 'error' : 'debug';
+        $level = $environment->get('APPLICATION_ENV', 'production') === 'production' ? 'error' : 'debug';
         $format = LineFormatter::SIMPLE_FORMAT;
         $dateFormat = LineFormatter::SIMPLE_DATE;
 
