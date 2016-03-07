@@ -2,7 +2,6 @@
 
 namespace Salexandru\CommandBus\Handler\Registry;
 
-use Salexandru\Command\CommandInterface as Command;
 use Interop\Container\ContainerInterface as Container;
 
 class DefaultRegistry implements RegistryInterface
