@@ -5,6 +5,6 @@ namespace Salexandru\CommandBus\Handler\Registry;
 interface RegistryInterface
 {
 
-    public function addHandlerFor($cmd, $handler);
-    public function getHandlerFor($cmd);
+    public function addHandler($key, $handler);
+    public function getHandler($key);
 }

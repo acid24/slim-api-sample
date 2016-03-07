@@ -68,7 +68,7 @@ class Bootstrapper
         $container = $this->server->getContainer();
         /** @var HandlerRegistry $handlerRegistry */
         $handlerRegistry = $container->get('commandBus.handler.registry');
-        $handlerRegistry->addHandlerFor(IssueAccessTokenCommand::class, 'commandBus.handler.issueAccessToken');
-        $handlerRegistry->addHandlerFor(RefreshAccessTokenCommand::class, 'commandBus.handler.refreshAccessToken');
+        $handlerRegistry->addHandler(IssueAccessTokenCommand::class, 'commandBus.handler.issueAccessToken');
+        $handlerRegistry->addHandler(RefreshAccessTokenCommand::class, 'commandBus.handler.refreshAccessToken');
     }
 }

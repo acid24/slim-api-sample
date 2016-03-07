@@ -21,6 +21,6 @@ class RegistryBasedHandlerLocator implements LocatorInterface
      */
     public function locateHandlerFor(Command $cmd)
     {
-        return $this->registry->getHandlerFor(get_class($cmd));
+        return $this->registry->getHandler(get_class($cmd));
     }
 }

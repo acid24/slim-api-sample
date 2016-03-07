@@ -18,9 +18,9 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
         $container->shouldNotReceive('get');
 
         $registry = new DefaultRegistry($container);
-        $registry->addHandlerFor($cmd, $handler);
+        $registry->addHandler($cmd, $handler);
 
-        $this->assertSame($handler, $registry->getHandlerFor($cmd));
+        $this->assertSame($handler, $registry->getHandler($cmd));
     }
 
     public function testRegistryReturnsNullIfHandlerNotPresentInStorage()
@@ -33,7 +33,7 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
 
         $registry = new DefaultRegistry($container);
 
-        $this->assertNull($registry->getHandlerFor($cmd));
+        $this->assertNull($registry->getHandler($cmd));
     }
 
     public function testRegistryReturnsNullIfHandlerNotPresentInContainer()
@@ -48,9 +48,9 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
             ->andReturn(false);
 
         $registry = new DefaultRegistry($container);
-        $registry->addHandlerFor($cmd, $handlerKey);
+        $registry->addHandler($cmd, $handlerKey);
 
-        $this->assertNull($registry->getHandlerFor($cmd));
+        $this->assertNull($registry->getHandler($cmd));
     }
 
     public function testRetrieveHandlerUsingContainer()
@@ -70,8 +70,8 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
             ->andReturn($handler);
 
         $registry = new DefaultRegistry($container);
-        $registry->addHandlerFor($cmd, $handlerKey);
+        $registry->addHandler($cmd, $handlerKey);
 
-        $this->assertSame($handler, $registry->getHandlerFor($cmd));
+        $this->assertSame($handler, $registry->getHandler($cmd));
     }
 }
