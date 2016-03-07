@@ -1,6 +1,6 @@
 <?php
 
-namespace Salexandru\CommandBus\Handler;
+namespace Salexandru\CommandBus\Handler\Inflector;
 
 use Salexandru\Command\CommandInterface as Command;
 

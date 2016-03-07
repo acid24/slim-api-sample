@@ -5,8 +5,8 @@ namespace Salexandru\CommandBus\Pipeline;
 use Salexandru\Command\CommandInterface as Command;
 use Salexandru\CommandBus\Exception\BadMethodCallException;
 use Salexandru\CommandBus\Exception\HandlerNotFoundException;
-use Salexandru\CommandBus\Handler\HandlerLocatorInterface as HandlerLocator;
-use Salexandru\CommandBus\Handler\MethodNameInflectorInterface as MethodNameInflector;
+use Salexandru\CommandBus\Handler\Locator\LocatorInterface as HandlerLocator;
+use Salexandru\CommandBus\Handler\Inflector\MethodNameInflectorInterface as MethodNameInflector;
 
 class ExecuteCommandPipe extends AbstractPipe
 {
