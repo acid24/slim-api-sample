@@ -5,7 +5,7 @@ namespace Salexandru\Api\Server;
 use Interop\Container\ContainerInterface as Container;
 use Salexandru\Api\Server;
 use Salexandru\Api\Server\Bootstrap\ContainerServicesProvider;
-use Salexandru\CommandBus\Handler\Registry\RegistryInterface as HandlerRegistry;
+use Salexandru\CommandBus\Handler\Registry as HandlerRegistry;
 use Salexandru\Command\AccessToken\IssueCommand as IssueAccessTokenCommand;
 use Salexandru\Command\AccessToken\RefreshCommand as RefreshAccessTokenCommand;
 
@@ -68,7 +68,7 @@ class Bootstrapper
         $container = $this->server->getContainer();
         /** @var HandlerRegistry $handlerRegistry */
         $handlerRegistry = $container->get('commandBus.handler.registry');
-        $handlerRegistry->addHandler(IssueAccessTokenCommand::class, 'commandBus.handler.issueAccessToken');
-        $handlerRegistry->addHandler(RefreshAccessTokenCommand::class, 'commandBus.handler.refreshAccessToken');
+        $handlerRegistry->addHandlerFor(IssueAccessTokenCommand::class, 'commandBus.handler.issueAccessToken');
+        $handlerRegistry->addHandlerFor(RefreshAccessTokenCommand::class, 'commandBus.handler.refreshAccessToken');
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Salexandru\CommandBus\Handler\Registry;
+namespace Salexandru\CommandBus\Handler;
 
 use Mockery as m;
 use Interop\Container\ContainerInterface as Container;
 
-class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
+class RegistryTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testHandlerNotAddedToRegistryIfItDoesNotPointToServiceInsideContainer()
@@ -17,10 +17,10 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
             ->andReturn(false)
             ->getMock();
 
-        $registry = new DefaultRegistry($container);
-        $registry->addHandler('test', $handler);
+        $registry = new Registry($container);
+        $registry->addHandlerFor($cmd = 'My\\TestCommand', $handler);
 
-        $this->assertNull($registry->getHandler('test'));
+        $this->assertNull($registry->getHandlerFor($cmd));
     }
 
     public function testRegistryReturnsNullIfHandlerIsNotPresentInStorage()
@@ -32,16 +32,16 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
             ->andReturn(true)
             ->getMock();
 
-        $registry = new DefaultRegistry($container);
-        $registry->addHandler('test', $handler);
+        $registry = new Registry($container);
+        $registry->addHandlerFor('My\\TestCommand', $handler);
 
-        $this->assertNull($registry->getHandler('non-existent'));
+        $this->assertNull($registry->getHandlerFor('My\\NonExistentCommand'));
     }
 
     public function testRetrieveHandler()
     {
         $h = function () {
-            // handle something
+            return true;
         };
 
         $container = m::mock(Container::class);
@@ -54,9 +54,9 @@ class DefaultRegistryTest extends \PHPUnit_Framework_TestCase
             ->with($handler)
             ->andReturn($h);
 
-        $registry = new DefaultRegistry($container);
-        $registry->addHandler('test', $handler);
+        $registry = new Registry($container);
+        $registry->addHandlerFor($cmd = 'My\\TestCommand', $handler);
 
-        $this->assertSame($h, $registry->getHandler('test'));
+        $this->assertSame($h, $registry->getHandlerFor($cmd));
     }
 }

@@ -27,8 +27,7 @@ use Salexandru\Bootstrap\ConfigInitializer;
 use Salexandru\CommandBus\CommandBus;
 use Salexandru\CommandBus\CommandBusInterface;
 use Salexandru\CommandBus\Handler\Locator\RegistryBasedHandlerLocator;
-use Salexandru\CommandBus\Handler\Registry\DefaultRegistry;
-use Salexandru\CommandBus\Handler\Registry\RegistryInterface as HandlerRegistry;
+use Salexandru\CommandBus\Handler\Registry as HandlerRegistry;
 use Salexandru\CommandBus\Pipeline\EndPipe;
 use Salexandru\CommandBus\Pipeline\ExecuteCommandPipe;
 use Salexandru\CommandBus\Pipeline\ExecutionPipelineProvider;
@@ -213,7 +212,7 @@ class ContainerServicesProvider implements ServiceProviderInterface
         };
 
         $this->container['commandBus.handler.registry'] = function (Container $c) {
-            return new DefaultRegistry($c);
+            return new HandlerRegistry($c);
         };
 
         $this->container['authManager'] = function (Container $c) {

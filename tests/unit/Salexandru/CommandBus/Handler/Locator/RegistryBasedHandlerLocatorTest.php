@@ -4,7 +4,7 @@ namespace Salexandru\CommandBus\Handler\Locator;
 
 use Mockery as m;
 use Salexandru\Command\CommandInterface as Command;
-use Salexandru\CommandBus\Handler\Registry\RegistryInterface as HandlerRegistry;
+use Salexandru\CommandBus\Handler\Registry as HandlerRegistry;
 
 class RegistryBasedHandlerLocatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class RegistryBasedHandlerLocatorTest extends \PHPUnit_Framework_TestCase
         $cmd = m::mock(Command::class);
 
         $registry = m::mock(HandlerRegistry::class)
-            ->shouldReceive('getHandler')
+            ->shouldReceive('getHandlerFor')
             ->once()
             ->with($cmd->mockery_getName())
             ->andReturn($expectedHandler)
