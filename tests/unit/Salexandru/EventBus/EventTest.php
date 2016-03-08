@@ -5,15 +5,9 @@ namespace Salexandru\EventBus;
 class EventTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testRetrieveEventName()
-    {
-        $e = new Event($name = 'test');
-        $this->assertEquals($name, $e->getName());
-    }
-
     public function testPropagation()
     {
-        $e = new Event('test');
+        $e = new Event();
         $this->assertFalse($e->isPropagationStopped());
 
         $e->stopPropagation();
