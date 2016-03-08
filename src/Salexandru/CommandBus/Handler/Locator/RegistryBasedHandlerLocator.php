@@ -17,7 +17,7 @@ class RegistryBasedHandlerLocator implements LocatorInterface
 
     /**
      * @param Command $cmd
-     * @return object|null
+     * @return callable|null
      */
     public function locateHandlerFor(Command $cmd)
     {

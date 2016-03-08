@@ -33,7 +33,7 @@ class RefreshHandlerTest extends \PHPUnit_Framework_TestCase
         $cmd = new RefreshCommand($this->token);
 
         $handler = new RefreshHandler($this->jwtAdapter);
-        $result = $handler->handle($cmd);
+        $result = $handler($cmd);
 
         $this->assertTrue($result->isInvalidAccessTokenError());
     }
@@ -49,7 +49,7 @@ class RefreshHandlerTest extends \PHPUnit_Framework_TestCase
         $cmd = new RefreshCommand($this->token);
 
         $handler = new RefreshHandler($this->jwtAdapter);
-        $result = $handler->handle($cmd);
+        $result = $handler($cmd);
 
         $this->assertTrue($result->isAccessTokenGenerationError());
     }
@@ -69,7 +69,7 @@ class RefreshHandlerTest extends \PHPUnit_Framework_TestCase
         $cmd = new RefreshCommand($this->token);
 
         $handler = new RefreshHandler($this->jwtAdapter);
-        $result = $handler->handle($cmd);
+        $result = $handler($cmd);
 
         $this->assertTrue($result->isSuccess());
         $this->assertEquals(['token' => $token, 'expiresAt' => $ts], $result->getPayload());

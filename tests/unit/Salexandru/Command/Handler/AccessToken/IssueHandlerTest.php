@@ -38,7 +38,7 @@ class IssueHandlerTest extends \PHPUnit_Framework_TestCase
         $cmd = new IssueCommand('test', 'test');
 
         $handler = new IssueHandler($this->authManager, $this->jwtAdapter);
-        $result = $handler->handle($cmd);
+        $result = $handler($cmd);
 
         $this->assertTrue($result->isInvalidUserCredentialsError());
     }
@@ -59,7 +59,7 @@ class IssueHandlerTest extends \PHPUnit_Framework_TestCase
         $cmd = new IssueCommand('test', 'test');
 
         $handler = new IssueHandler($this->authManager, $this->jwtAdapter);
-        $result = $handler->handle($cmd);
+        $result = $handler($cmd);
 
         $this->assertTrue($result->isAccessTokenGenerationError());
     }
@@ -84,7 +84,7 @@ class IssueHandlerTest extends \PHPUnit_Framework_TestCase
         $cmd = new IssueCommand('test', 'test');
 
         $handler = new IssueHandler($this->authManager, $this->jwtAdapter);
-        $result = $handler->handle($cmd);
+        $result = $handler($cmd);
 
         $this->assertTrue($result->isSuccess());
         $this->assertEquals(['token' => $token, 'expiresAt' => $ts], $result->getPayload());

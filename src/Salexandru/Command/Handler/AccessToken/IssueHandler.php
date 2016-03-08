@@ -21,7 +21,7 @@ class IssueHandler
         $this->authManager = $authManager;
     }
 
-    public function handle(IssueCommand $cmd)
+    public function __invoke(IssueCommand $cmd)
     {
         $apiClient = new ApiClient($cmd->getUsername(), $cmd->getPassword());
         /** @var AuthResult $authResult */

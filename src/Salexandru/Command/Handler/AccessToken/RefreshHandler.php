@@ -17,7 +17,7 @@ class RefreshHandler
         $this->jwtAdapter = $jwtAdapter;
     }
 
-    public function handle(RefreshCommand $cmd)
+    public function __invoke(RefreshCommand $cmd)
     {
         $currentToken = $cmd->getCurrentAccessToken();
 

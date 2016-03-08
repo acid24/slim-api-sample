@@ -27,7 +27,6 @@ use Salexandru\Bootstrap\ConfigInitializer;
 use Salexandru\CommandBus\CommandBus;
 use Salexandru\CommandBus\CommandBusInterface;
 use Salexandru\CommandBus\Handler\Locator\RegistryBasedHandlerLocator;
-use Salexandru\CommandBus\Handler\Inflector\HandleInflector;
 use Salexandru\CommandBus\Handler\Registry\DefaultRegistry;
 use Salexandru\CommandBus\Handler\Registry\RegistryInterface as HandlerRegistry;
 use Salexandru\CommandBus\Pipeline\EndPipe;
@@ -209,7 +208,6 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
             return new ExecuteCommandPipe(
                 new RegistryBasedHandlerLocator($handlerRegistry),
-                new HandleInflector(),
                 new EndPipe()
             );
         };
