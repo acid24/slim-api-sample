@@ -4,7 +4,6 @@ namespace Salexandru\Db\Transaction\Doctrine;
 
 use Mockery as m;
 use Doctrine\DBAL\Driver\Connection;
-use Salexandru\Db\Transaction\Doctrine\DbalAdapter;
 
 class DbalAdapterTest extends \PHPUnit_Framework_TestCase
 {
