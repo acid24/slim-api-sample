@@ -3,7 +3,7 @@
 namespace Salexandru\Db\Transaction\Doctrine;
 
 use Salexandru\Db\Transaction\AdapterInterface;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 class DbalAdapter implements AdapterInterface
 {
@@ -43,5 +43,15 @@ class DbalAdapter implements AdapterInterface
     public function rollbackTransaction()
     {
         $this->conn->rollBack();
+    }
+
+    /**
+     * Is a transaction active ATM?
+     *
+     * @return boolean
+     */
+    public function isTransactionActive()
+    {
+        return $this->conn->isTransactionActive();
     }
 }

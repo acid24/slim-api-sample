@@ -3,7 +3,7 @@
 namespace Salexandru\Db\Transaction\Doctrine;
 
 use Mockery as m;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 class DbalAdapterTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,5 +43,15 @@ class DbalAdapterTest extends \PHPUnit_Framework_TestCase
 
         $adapter = new DbalAdapter($this->conn);
         $adapter->rollbackTransaction();
+    }
+
+    public function testCheckTransactionIsActive()
+    {
+        $this->conn->shouldReceive('isTransactionActive')
+            ->once()
+            ->andReturn($isActive = (bool)mt_rand(0, 1));
+
+        $adapter = new DbalAdapter($this->conn);
+        $this->assertEquals($isActive, $adapter->isTransactionActive());
     }
 }

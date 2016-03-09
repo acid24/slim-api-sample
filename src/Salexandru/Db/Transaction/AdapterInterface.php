@@ -25,4 +25,11 @@ interface AdapterInterface
      * @return void
      */
     public function rollbackTransaction();
+
+    /**
+     * Is a transaction active ATM?
+     *
+     * @return boolean
+     */
+    public function isTransactionActive();
 }
