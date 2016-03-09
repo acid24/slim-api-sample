@@ -31,7 +31,7 @@ use Salexandru\CommandBus\Handler\Registry as HandlerRegistry;
 use Salexandru\CommandBus\Pipeline\EndPipe;
 use Salexandru\CommandBus\Pipeline\ExecuteCommandPipe;
 use Salexandru\CommandBus\Pipeline\ExecutionPipelineProvider;
-use Salexandru\Db\Logging\DoctrineSqlLogger;
+use Salexandru\Db\Logging\Doctrine\DbalSqlLogger;
 use Salexandru\Jwt\AdapterInterface;
 use Slim\Collection;
 use Salexandru\Jwt\Adapter\Configuration as AdapterConfiguration;
@@ -174,7 +174,7 @@ class ContainerServicesProvider implements ServiceProviderInterface
             if ($appEnv !== 'production') {
                 /** @var PsrLogger $logger */
                 $logger = $c->get('logger.sql');
-                $configuration->setSQLLogger(new DoctrineSqlLogger($logger));
+                $configuration->setSQLLogger(new DbalSqlLogger($logger));
             }
 
             /** @var Collection $settings */

@@ -1,13 +1,12 @@
 <?php
 
-namespace Salexandru\Db\Logging;
+namespace Salexandru\Db\Logging\Doctrine;
 
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\DBAL\SQLParserUtils;
-use Doctrine\DBAL\SQLParserUtilsException;
 use Psr\Log\LoggerInterface as PsrLogger;
 
-class DoctrineSqlLogger implements SQLLogger
+class DbalSqlLogger implements SQLLogger
 {
 
     /**

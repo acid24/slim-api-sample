@@ -1,12 +1,12 @@
 <?php
 
-namespace Salexandru\Db\Logging;
+namespace Salexandru\Db\Logging\Doctrine;
 
 use Doctrine\DBAL\Connection;
 use Mockery as m;
 use Psr\Log\LoggerInterface as PsrLogger;
 
-class DoctrineSqlLoggerTest extends \PHPUnit_Framework_TestCase
+class DbalSqlLoggerTest extends \PHPUnit_Framework_TestCase
 {
 
     private $psrLogger;
@@ -27,7 +27,7 @@ class DoctrineSqlLoggerTest extends \PHPUnit_Framework_TestCase
             ->with($expectedMessage, $expectedContext)
             ->getMock();
 
-        $logger = new DoctrineSqlLogger($this->psrLogger);
+        $logger = new DbalSqlLogger($this->psrLogger);
         $logger->startQuery($sql);
     }
 
@@ -45,7 +45,7 @@ class DoctrineSqlLoggerTest extends \PHPUnit_Framework_TestCase
             ->with($expectedMessage, $expectedContext)
             ->getMock();
 
-        $logger = new DoctrineSqlLogger($this->psrLogger);
+        $logger = new DbalSqlLogger($this->psrLogger);
         $logger->startQuery($sql, $params);
     }
 
@@ -64,7 +64,7 @@ class DoctrineSqlLoggerTest extends \PHPUnit_Framework_TestCase
             ->with($expectedMessage, $expectedContext)
             ->getMock();
 
-        $logger = new DoctrineSqlLogger($this->psrLogger);
+        $logger = new DbalSqlLogger($this->psrLogger);
         $logger->startQuery($sql, $params, $types);
     }
 
@@ -82,7 +82,7 @@ class DoctrineSqlLoggerTest extends \PHPUnit_Framework_TestCase
             ->with($expectedMessage, $expectedContext)
             ->getMock();
 
-        $logger = new DoctrineSqlLogger($this->psrLogger);
+        $logger = new DbalSqlLogger($this->psrLogger);
         $logger->startQuery($sql, $params);
     }
 
@@ -108,7 +108,7 @@ class DoctrineSqlLoggerTest extends \PHPUnit_Framework_TestCase
         $this->psrLogger->shouldReceive('debug')
             ->with($expectedMessage, $expectedContext);
 
-        $logger = new DoctrineSqlLogger($this->psrLogger);
+        $logger = new DbalSqlLogger($this->psrLogger);
         $logger->startQuery($sql);
         $logger->stopQuery();
     }
