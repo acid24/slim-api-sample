@@ -2,8 +2,9 @@
 
 namespace Salexandru\Bootstrap;
 
+use Salexandru\Bootstrap\Exception\RuntimeException;
+use Salexandru\Config\Cache\AdapterInterface as ConfigCache;
 use Slim\Collection;
-use Slim\Http\Environment;
 use Zend\Config\Reader\Ini as IniReader;
 
 class ConfigInitializer extends AbstractResourceInitializer
@@ -45,29 +46,25 @@ class ConfigInitializer extends AbstractResourceInitializer
         }
     }
 
-    private function resolvePathToConfigFile()
-    {
-        /** @var Environment $environment */
-        $environment = $this->container->get('environment');
-
-        $appEnv = $environment->get('APPLICATION_ENV', 'production');
-        $dir = CONFIG_DIR;
-
-        $pathToConfigFile = "$dir/config.$appEnv.ini";
-        if (!file_exists($pathToConfigFile)) {
-            $pathToConfigFile = "$dir/config.ini";
-        }
-
-        return $pathToConfigFile;
-    }
-
     private function loadConfig()
     {
-        // @todo add logic here to add/retrieve the configuration from cache (APC makes sense)
-        $pathToConfigFile = $this->resolvePathToConfigFile();
+        /** @var ConfigCache $configCache */
+        $configCache = $this->container->get('defaultConfigCache');
+        if (null !== ($config = $configCache->getCachedConfig())) {
+            return $config;
+        }
+
+        $pathToConfigFile = CONFIG_DIR . '/config.ini';
+        clearstatcache(true, $pathToConfigFile);
+
+        if (!file_exists($pathToConfigFile)) {
+            throw new RuntimeException("$pathToConfigFile does not exist");
+        }
 
         $iniReader = new IniReader();
         $config = $iniReader->fromFile($pathToConfigFile);
+
+        $configCache->cache($config);
 
         return $config;
     }

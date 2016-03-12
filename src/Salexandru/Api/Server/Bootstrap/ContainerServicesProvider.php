@@ -2,6 +2,7 @@
 
 namespace Salexandru\Api\Server\Bootstrap;
 
+use Doctrine\Common\Cache\ApcuCache;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Configuration as DbalConfiguration;
@@ -31,6 +32,7 @@ use Salexandru\CommandBus\Handler\Registry as HandlerRegistry;
 use Salexandru\CommandBus\Pipeline\EndPipe;
 use Salexandru\CommandBus\Pipeline\ExecuteCommandPipe;
 use Salexandru\CommandBus\Pipeline\ExecutionPipelineProvider;
+use Salexandru\Config\Cache\DefaultConfigCache;
 use Salexandru\Db\Logging\Doctrine\DbalSqlLogger;
 use Salexandru\Jwt\AdapterInterface;
 use Slim\Collection;
@@ -76,6 +78,11 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
     private function registerConfig()
     {
+        // this service is needed by the config initializer
+        $this->container['defaultConfigCache'] = function () {
+            return new DefaultConfigCache(new ApcuCache());
+        };
+
         (new ConfigInitializer($this->container))->run();
     }
 
