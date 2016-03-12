@@ -88,11 +88,8 @@ class ContainerServicesProvider implements ServiceProviderInterface
 
     private function registerLoggers()
     {
-        /** @var Environment $environment */
-        $environment = $this->container['environment'];
-
         $path = sys_get_temp_dir() . '/app.log';
-        $level = $environment->get('APPLICATION_ENV', 'production') === 'production' ? 'error' : 'debug';
+        $level = 'debug';
         $format = LineFormatter::SIMPLE_FORMAT;
         $dateFormat = LineFormatter::SIMPLE_DATE;
 
@@ -173,17 +170,6 @@ class ContainerServicesProvider implements ServiceProviderInterface
     private function registerInfrastructureServices()
     {
         $this->container['dbConnection'] = function (Container $c) {
-            /** @var Environment $environment */
-            $environment = $this->container->get('environment');
-            $appEnv = $environment->get('APPLICATION_ENV', 'production');
-
-            $configuration = new DbalConfiguration();
-            if ($appEnv !== 'production') {
-                /** @var PsrLogger $logger */
-                $logger = $c->get('logger.sql');
-                $configuration->setSQLLogger(new DbalSqlLogger($logger));
-            }
-
             /** @var Collection $settings */
             $settings = $c->get('settings');
             $db = $settings->get('db');
@@ -192,6 +178,13 @@ class ContainerServicesProvider implements ServiceProviderInterface
                 'driver' => $db['driver'],
                 'path' => $db['path']
             ];
+
+            $configuration = new DbalConfiguration();
+            if ($db['loggingEnabled'] == true) {
+                /** @var PsrLogger $logger */
+                $logger = $c->get('logger.sql');
+                $configuration->setSQLLogger(new DbalSqlLogger($logger));
+            }
 
             return DriverManager::getConnection($params, $configuration);
         };
