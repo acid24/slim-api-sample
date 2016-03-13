@@ -108,7 +108,7 @@ class BaseContext implements Context, SnippetAcceptingContext
     {
         $expirationTime = (new \DateTime("+5 minutes"))->getTimestamp();
         /** @var AdapterInterface $jwtAdapter */
-        $jwtAdapter = $this->newJwtAdapter(array('expiration' => $expirationTime));
+        $jwtAdapter = $this->newJwtAdapter(['expiration' => $expirationTime]);
         $this->accessToken = $jwtAdapter->generateToken();
     }
 

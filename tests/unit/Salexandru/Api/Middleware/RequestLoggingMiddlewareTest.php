@@ -64,7 +64,8 @@ class RequestLoggingMiddlewareTest extends \PHPUnit_Framework_TestCase
         $request = $this->request->withMethod('POST');
         $response = $this->response;
 
-        $expectedMessage = 'Received {http_method} request to {endpoint} (query params: {query_params}) from IP {ip} with body {body}';
+        $expectedMessage  = 'Received {http_method} request to {endpoint} (query params: {query_params}) ';
+        $expectedMessage .= 'from IP {ip} with body {body}';
         $expectedContext = [
             'body' => '(not shown)',
             'ip' => $this->testIpAddress,
@@ -99,7 +100,8 @@ class RequestLoggingMiddlewareTest extends \PHPUnit_Framework_TestCase
             ->withHeader('content-type', 'application/json');
         $response = $this->response;
 
-        $expectedMessage = 'Received {http_method} request to {endpoint} (query params: {query_params}) from IP {ip} with body {body}';
+        $expectedMessage  = 'Received {http_method} request to {endpoint} (query params: {query_params}) ';
+        $expectedMessage .= 'from IP {ip} with body {body}';
         $expectedContext = [
             'body' => $body,
             'ip' => $this->testIpAddress,
