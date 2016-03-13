@@ -1,0 +1,1 @@
+This is the location where doctrine metadata mapping information is held
