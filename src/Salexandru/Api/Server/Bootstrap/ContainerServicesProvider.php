@@ -3,9 +3,14 @@
 namespace Salexandru\Api\Server\Bootstrap;
 
 use Doctrine\Common\Cache\ApcuCache;
+use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Persistence\Mapping\Driver\PHPDriver;
+use Doctrine\Common\Proxy\Autoloader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Configuration as DbalConfiguration;
+use Doctrine\ORM\Configuration as OrmConfiguration;
+use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
@@ -187,6 +192,35 @@ class ContainerServicesProvider implements ServiceProviderInterface
             }
 
             return DriverManager::getConnection($params, $configuration);
+        };
+
+        $this->container['orm.doctrine.entityManager'] = function (Container $c) {
+            /** @var Connection $conn */
+            $conn = $c->get('dbConnection');
+            /** @var array $settings */
+            $settings = $c->get('settings')->get('doctrine');
+
+            $cache = $settings['cachingEnabled'] == true
+                ? new ApcuCache()
+                : new ArrayCache();
+
+            Autoloader::register(
+                $proxyDir = $settings['proxy']['dir'],
+                $proxyNamespace = $settings['proxy']['namespace']
+            );
+
+            $configuration = new OrmConfiguration();
+
+            $configuration->setProxyDir($proxyDir);
+            $configuration->setProxyNamespace($proxyNamespace);
+            $configuration->setAutoGenerateProxyClasses((int)$settings['proxy']['autogenerate']);
+
+            $configuration->setMetadataDriverImpl(new PHPDriver($settings['metadata']['dir']));
+
+            $configuration->setQueryCacheImpl($cache);
+            $configuration->setMetadataCacheImpl($cache);
+
+            return EntityManager::create($conn, $configuration);
         };
 
         $this->container['jwtAdapter'] = function (Container $c) {
