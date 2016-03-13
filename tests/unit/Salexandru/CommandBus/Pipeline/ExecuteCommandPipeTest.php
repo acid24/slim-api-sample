@@ -4,7 +4,7 @@ namespace Salexandru\CommandBus\Pipeline;
 
 use Mockery as m;
 use Salexandru\Command\CommandInterface as Command;
-use Salexandru\CommandBus\Handler\Locator\LocatorInterface as HandlerLocator;
+use Salexandru\CommandBus\Handler\Resolver\ResolverInterface as HandlerResolver;
 use Salexandru\CommandBus\Pipeline\PipeInterface as Pipe;
 use Salexandru\CommandBus\Exception\HandlerNotFoundException;
 use Salexandru\CommandBus\Exception\UnexpectedValueException;
@@ -18,14 +18,14 @@ class ExecuteCommandPipeTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(HandlerNotFoundException::class);
 
         $cmd = m::mock(Command::class);
-        $locator = m::mock(HandlerLocator::class)
-            ->shouldReceive('locateHandlerFor')
+        $resolver = m::mock(HandlerResolver::class)
+            ->shouldReceive('resolveHandlerFor')
             ->once()
             ->with($cmd)
             ->andReturnNull()
             ->getMock();
 
-        $pipe = new ExecuteCommandPipe($locator, new EndPipe());
+        $pipe = new ExecuteCommandPipe($resolver, new EndPipe());
         $pipe->receive($cmd);
     }
 
@@ -34,14 +34,14 @@ class ExecuteCommandPipeTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(UnexpectedValueException::class);
 
         $cmd = m::mock(Command::class);
-        $locator = m::mock(HandlerLocator::class)
-            ->shouldReceive('locateHandlerFor')
+        $resolver = m::mock(HandlerResolver::class)
+            ->shouldReceive('resolveHandlerFor')
             ->once()
             ->with($cmd)
             ->andReturn(new \stdClass())
             ->getMock();
 
-        $pipe = new ExecuteCommandPipe($locator, new EndPipe());
+        $pipe = new ExecuteCommandPipe($resolver, new EndPipe());
         $pipe->receive($cmd);
     }
 
@@ -57,14 +57,14 @@ class ExecuteCommandPipeTest extends \PHPUnit_Framework_TestCase
             return Result::success();
         };
 
-        $locator = m::mock(HandlerLocator::class)
-            ->shouldReceive('locateHandlerFor')
+        $resolver = m::mock(HandlerResolver::class)
+            ->shouldReceive('resolveHandlerFor')
             ->once()
             ->with($cmd)
             ->andReturn($handler)
             ->getMock();
 
-        $pipe = new ExecuteCommandPipe($locator, $endPipe);
+        $pipe = new ExecuteCommandPipe($resolver, $endPipe);
         $result = $pipe->receive($cmd);
 
         $this->assertInstanceOf(Result::class, $result);

@@ -1,11 +1,11 @@
 <?php
 
-namespace Salexandru\CommandBus\Handler\Locator;
+namespace Salexandru\CommandBus\Handler\Resolver;
 
 use Salexandru\Command\CommandInterface as Command;
 use Salexandru\CommandBus\Handler\Registry as HandlerRegistry;
 
-class RegistryBasedHandlerLocator implements LocatorInterface
+class DefaultHandlerResolver implements ResolverInterface
 {
 
     private $registry;
@@ -19,7 +19,7 @@ class RegistryBasedHandlerLocator implements LocatorInterface
      * @param Command $cmd
      * @return callable|null
      */
-    public function locateHandlerFor(Command $cmd)
+    public function resolveHandlerFor(Command $cmd)
     {
         return $this->registry->getHandlerFor(get_class($cmd));
     }

@@ -1,12 +1,12 @@
 <?php
 
-namespace Salexandru\CommandBus\Handler\Locator;
+namespace Salexandru\CommandBus\Handler\Resolver;
 
 use Mockery as m;
 use Salexandru\Command\CommandInterface as Command;
 use Salexandru\CommandBus\Handler\Registry as HandlerRegistry;
 
-class RegistryBasedHandlerLocatorTest extends \PHPUnit_Framework_TestCase
+class DefaultHandlerResolverTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testLocateHandler()
@@ -24,8 +24,8 @@ class RegistryBasedHandlerLocatorTest extends \PHPUnit_Framework_TestCase
             ->andReturn($expectedHandler)
             ->getMock();
 
-        $locator = new RegistryBasedHandlerLocator($registry);
-        $actualHandler = $locator->locateHandlerFor($cmd);
+        $locator = new DefaultHandlerResolver($registry);
+        $actualHandler = $locator->resolveHandlerFor($cmd);
 
         $this->assertSame($expectedHandler, $actualHandler);
     }

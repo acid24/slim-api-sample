@@ -1,15 +1,15 @@
 <?php
 
-namespace Salexandru\CommandBus\Handler\Locator;
+namespace Salexandru\CommandBus\Handler\Resolver;
 
 use Salexandru\Command\CommandInterface as Command;
 
-interface LocatorInterface
+interface ResolverInterface
 {
 
     /**
      * @param Command $cmd
      * @return callable|null
      */
-    public function locateHandlerFor(Command $cmd);
+    public function resolveHandlerFor(Command $cmd);
 }

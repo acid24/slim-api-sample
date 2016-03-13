@@ -32,7 +32,7 @@ use Salexandru\Authentication\AuthenticationManager;
 use Salexandru\Bootstrap\ConfigInitializer;
 use Salexandru\CommandBus\CommandBus;
 use Salexandru\CommandBus\CommandBusInterface;
-use Salexandru\CommandBus\Handler\Locator\RegistryBasedHandlerLocator;
+use Salexandru\CommandBus\Handler\Resolver\DefaultHandlerResolver;
 use Salexandru\CommandBus\Handler\Registry as HandlerRegistry;
 use Salexandru\CommandBus\Pipeline\EndPipe;
 use Salexandru\CommandBus\Pipeline\ExecuteCommandPipe;
@@ -45,7 +45,6 @@ use Salexandru\Jwt\Adapter\Configuration as AdapterConfiguration;
 use Salexandru\Jwt\Adapter\LcobucciAdapter as JwtAdapter;
 use Salexandru\Command\Handler\AccessToken\IssueHandler as IssueAccessTokenHandler;
 use Salexandru\Command\Handler\AccessToken\RefreshHandler as RefreshAccessTokenHandler;
-use Slim\Http\Environment;
 
 class ContainerServicesProvider implements ServiceProviderInterface
 {
@@ -240,7 +239,7 @@ class ContainerServicesProvider implements ServiceProviderInterface
             $handlerRegistry = $c->get('commandBus.handler.registry');
 
             return new ExecuteCommandPipe(
-                new RegistryBasedHandlerLocator($handlerRegistry),
+                new DefaultHandlerResolver($handlerRegistry),
                 new EndPipe()
             );
         };
